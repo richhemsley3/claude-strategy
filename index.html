@@ -1,1734 +1,1457 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Running Claude in a Design Organization at Scale</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
-  <style>
-    /* ── Reset ── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Running Claude in a Design Organization at Scale</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+<style>
+  /* ============================================================
+     Design System Lab — Inline Tokens
+     ============================================================ */
 
-    /* ── Tokens ── */
-    :root {
-      /* Colors – Warm Gray */
-      --sds-color-warm-gray-025: #FAF8F5;
-      --sds-color-warm-gray-050: #F4F1EB;
-      --sds-color-warm-gray-100: #EBE6DD;
-      --sds-color-warm-gray-150: #E0DCD3;
-      --sds-color-warm-gray-200: #D0CBC3;
-      --sds-color-warm-gray-300: #B0ABA2;
-      --sds-color-warm-gray-400: #928C83;
-      --sds-color-warm-gray-550: #6B6760;
-      --sds-color-warm-gray-650: #54514D;
-      --sds-color-warm-gray-800: #302D28;
-      --sds-color-warm-gray-900: #1C1A17;
+  :root {
+    /* Font families */
+    --sds-font-sans: 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --sds-font-mono: 'SF Mono', SFMono-Regular, Consolas, monospace;
 
-      /* Colors – Blue */
-      --sds-color-blue-050: #E8F4F8;
-      --sds-color-blue-100: #D9EBED;
-      --sds-color-blue-200: #B3D7DE;
-      --sds-color-blue-700: #0A5A7C;
-      --sds-color-blue-750: #013D5B;
-      --sds-color-blue-800: #05314D;
-      --sds-color-blue-850: #032740;
+    /* Type scale */
+    --sds-type-display: 28px;
+    --sds-type-heading: 22px;
+    --sds-type-subheading: 16px;
+    --sds-type-title: 15px;
+    --sds-type-body: 14px;
+    --sds-type-label: 13px;
+    --sds-type-caption: 12px;
+    --sds-type-overline: 11px;
 
-      /* Colors – Green */
-      --sds-color-green-025: #F0F9F4;
-      --sds-color-green-050: #E1F3E9;
-      --sds-color-green-500: #1B7D3E;
+    /* Weights */
+    --sds-weight-regular: 400;
+    --sds-weight-medium: 500;
+    --sds-weight-semibold: 600;
+    --sds-weight-bold: 700;
+    --sds-weight-extrabold: 800;
 
-      /* Colors – Yellow */
-      --sds-color-yellow-025: #FFFCF0;
-      --sds-color-yellow-050: #FFF8E1;
-      --sds-color-yellow-500: #9E7700;
+    /* Line heights */
+    --sds-leading-tight: 1.2;
+    --sds-leading-snug: 1.35;
+    --sds-leading-normal: 1.5;
+    --sds-leading-relaxed: 1.6;
 
-      /* Colors – Red */
-      --sds-color-red-025: #FEF6F5;
-      --sds-color-red-050: #FDECEB;
-      --sds-color-red-500: #C93B37;
+    /* Tracking */
+    --sds-tracking-tight: -0.01em;
+    --sds-tracking-normal: 0em;
+    --sds-tracking-wide: 0.5px;
 
-      /* Colors – Purple */
-      --sds-color-purple-025: #F8F5FC;
-      --sds-color-purple-050: #F0EAFA;
-      --sds-color-purple-500: #6B3FA0;
+    /* Space scale */
+    --sds-space-0: 0px;
+    --sds-space-050: 2px;
+    --sds-space-100: 4px;
+    --sds-space-150: 6px;
+    --sds-space-200: 8px;
+    --sds-space-250: 10px;
+    --sds-space-300: 12px;
+    --sds-space-400: 16px;
+    --sds-space-500: 20px;
+    --sds-space-600: 24px;
+    --sds-space-800: 32px;
+    --sds-space-1000: 40px;
+    --sds-space-1200: 48px;
+    --sds-space-1600: 64px;
 
-      /* Semantic – Background */
-      --sds-bg-page: #FFFFFF;
-      --sds-bg-surface: var(--sds-color-warm-gray-025);
-      --sds-bg-card: #FFFFFF;
-      --sds-bg-subtle: var(--sds-color-warm-gray-050);
+    /* Color primitives */
+    --sds-color-warm-gray-025: #FAF8F5;
+    --sds-color-warm-gray-050: #F4F1EB;
+    --sds-color-warm-gray-100: #EBE6DD;
+    --sds-color-warm-gray-150: #E0DCD3;
+    --sds-color-warm-gray-200: #D0CBC3;
+    --sds-color-warm-gray-250: #BFBAB2;
+    --sds-color-warm-gray-300: #B0ABA2;
+    --sds-color-warm-gray-400: #948E85;
+    --sds-color-warm-gray-500: #7A756F;
+    --sds-color-warm-gray-550: #6B6760;
+    --sds-color-warm-gray-650: #54514D;
+    --sds-color-warm-gray-700: #47443F;
+    --sds-color-warm-gray-800: #302D28;
+    --sds-color-warm-gray-900: #1C1A17;
+    --sds-color-blue-025: #F2F7F7;
+    --sds-color-blue-050: #EBF4F5;
+    --sds-color-blue-100: #D9EBED;
+    --sds-color-blue-150: #C1DDE3;
+    --sds-color-blue-200: #A6CBD6;
+    --sds-color-blue-450: #4F8AA0;
+    --sds-color-blue-700: #0C4A69;
+    --sds-color-blue-750: #013D5B;
+    --sds-color-blue-800: #05314D;
+    --sds-color-blue-850: #032740;
+    --sds-color-green-025: #F4FAEB;
+    --sds-color-green-400: #7A9A01;
+    --sds-color-green-500: #62800B;
+    --sds-color-green-700: #374A1E;
+    --sds-color-yellow-025: #FCF9D9;
+    --sds-color-yellow-200: #EBCE2D;
+    --sds-color-yellow-500: #8A7515;
+    --sds-color-red-050: #FFEEEB;
+    --sds-color-red-500: #BF5547;
+    --sds-color-purple-050: #F7EEFF;
+    --sds-color-purple-550: #805AA1;
+    --sds-color-white: #FFFFFF;
 
-      /* Semantic – Text */
-      --sds-text-primary: var(--sds-color-warm-gray-900);
-      --sds-text-secondary: var(--sds-color-warm-gray-650);
-      --sds-text-tertiary: var(--sds-color-warm-gray-550);
-      --sds-text-link: var(--sds-color-blue-750);
+    /* Semantic tokens */
+    --sds-bg-page: var(--sds-color-white);
+    --sds-bg-surface: var(--sds-color-warm-gray-025);
+    --sds-bg-card: var(--sds-color-white);
+    --sds-bg-subtle: var(--sds-color-warm-gray-050);
+    --sds-text-primary: var(--sds-color-warm-gray-900);
+    --sds-text-secondary: var(--sds-color-warm-gray-650);
+    --sds-text-tertiary: var(--sds-color-warm-gray-550);
+    --sds-text-on-primary: var(--sds-color-white);
+    --sds-text-link: var(--sds-color-blue-750);
+    --sds-border-default: var(--sds-color-warm-gray-150);
+    --sds-border-subtle: var(--sds-color-warm-gray-100);
+    --sds-border-strong: var(--sds-color-warm-gray-200);
+    --sds-interactive-primary: var(--sds-color-blue-750);
+    --sds-interactive-primary-hover: var(--sds-color-blue-800);
+    --sds-nav-sidebar-bg: var(--sds-color-warm-gray-025);
+    --sds-nav-item-active-bg: var(--sds-color-blue-100);
+    --sds-nav-item-active-text: var(--sds-color-blue-750);
+    --sds-nav-item-text: var(--sds-color-warm-gray-650);
 
-      /* Semantic – Border */
-      --sds-border-default: var(--sds-color-warm-gray-150);
-      --sds-border-subtle: var(--sds-color-warm-gray-100);
+    /* Status */
+    --sds-status-success-bg: var(--sds-color-green-025);
+    --sds-status-success-text: var(--sds-color-green-500);
+    --sds-status-warning-bg: var(--sds-color-yellow-025);
+    --sds-status-warning-text: var(--sds-color-yellow-500);
+    --sds-status-error-bg: var(--sds-color-red-050);
+    --sds-status-error-text: var(--sds-color-red-500);
+    --sds-status-info-bg: var(--sds-color-blue-050);
+    --sds-status-info-text: var(--sds-color-blue-700);
+    --sds-status-neutral-bg: var(--sds-color-warm-gray-100);
+    --sds-status-neutral-text: var(--sds-color-warm-gray-650);
+    --sds-status-purple-bg: var(--sds-color-purple-050);
+    --sds-status-purple-text: var(--sds-color-purple-550);
+  }
 
-      /* Semantic – Interactive */
-      --sds-interactive-primary: var(--sds-color-blue-750);
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-      /* Semantic – Nav */
-      --sds-nav-sidebar-bg: var(--sds-color-warm-gray-025);
-      --sds-nav-item-active-bg: var(--sds-color-blue-100);
-      --sds-nav-item-active-text: var(--sds-color-blue-750);
-      --sds-nav-item-text: var(--sds-color-warm-gray-650);
-      --sds-nav-section-header: var(--sds-color-warm-gray-550);
+  body {
+    font-family: var(--sds-font-sans);
+    background: var(--sds-bg-page);
+    color: var(--sds-text-primary);
+    line-height: var(--sds-leading-normal);
+    font-size: var(--sds-type-body);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
 
-      /* Spacing */
-      --sds-space-050: 2px;
-      --sds-space-100: 4px;
-      --sds-space-150: 6px;
-      --sds-space-200: 8px;
-      --sds-space-250: 10px;
-      --sds-space-300: 12px;
-      --sds-space-400: 16px;
-      --sds-space-500: 20px;
-      --sds-space-600: 24px;
-      --sds-space-800: 32px;
-      --sds-space-1000: 40px;
-      --sds-space-1200: 48px;
-      --sds-space-1600: 64px;
+  /* ============================================================
+     Header (Design System Lab)
+     ============================================================ */
+  .sds-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    padding: 0 var(--sds-space-500);
+    background: var(--sds-bg-page);
+    border-bottom: 1px solid var(--sds-border-subtle);
+    flex-shrink: 0;
+    z-index: 10;
+  }
+  .sds-header-logo { display: flex; align-items: center; gap: var(--sds-space-250); height: 28px; }
+  .sds-header-logo-text {
+    font-size: var(--sds-type-title); font-weight: var(--sds-weight-semibold);
+    color: var(--sds-text-primary); letter-spacing: -0.2px; white-space: nowrap;
+  }
+  .sds-header-actions { display: flex; align-items: center; gap: var(--sds-space-200); }
+  .sds-header-meta {
+    font-size: var(--sds-type-caption);
+    color: var(--sds-text-tertiary);
+  }
 
-      /* Typography */
-      --sds-font-sans: 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --sds-font-mono: 'SF Mono', SFMono-Regular, Consolas, monospace;
-      --sds-type-display: 28px;
-      --sds-type-heading: 22px;
-      --sds-type-subheading: 16px;
-      --sds-type-title: 15px;
-      --sds-type-body: 14px;
-      --sds-type-label: 13px;
-      --sds-type-caption: 12px;
-      --sds-type-overline: 11px;
-      --sds-weight-regular: 400;
-      --sds-weight-semibold: 600;
-      --sds-weight-bold: 700;
-      --sds-leading-tight: 1.2;
-      --sds-leading-snug: 1.35;
-      --sds-leading-normal: 1.5;
-      --sds-leading-relaxed: 1.6;
-      --sds-tracking-wide: 0.5px;
-    }
+  /* ============================================================
+     Layout: Sidebar + Content
+     ============================================================ */
+  .app-body { display: flex; flex: 1; overflow: hidden; }
 
-    /* ── Base ── */
-    html, body { height: 100%; overflow: hidden; }
-    body {
-      font-family: var(--sds-font-sans);
-      font-size: var(--sds-type-body);
-      color: var(--sds-text-primary);
-      line-height: var(--sds-leading-normal);
-      background: var(--sds-bg-page);
-      display: flex;
-      flex-direction: column;
-    }
+  /* Side Navigation (Design System Lab) */
+  .sds-sidenav {
+    width: 220px; min-width: 220px; background: var(--sds-nav-sidebar-bg);
+    border-right: 1px solid var(--sds-border-default); display: flex;
+    flex-direction: column; padding: var(--sds-space-400) var(--sds-space-300);
+    user-select: none; overflow-y: auto; flex-shrink: 0;
+  }
+  .sds-sidenav-item {
+    display: flex; align-items: center; gap: var(--sds-space-250);
+    padding: var(--sds-space-200) var(--sds-space-300); border-radius: 8px;
+    font-size: var(--sds-type-body); font-weight: var(--sds-weight-regular);
+    color: var(--sds-color-warm-gray-700); cursor: pointer; text-decoration: none;
+    margin: var(--sds-space-050) 0; line-height: 1.3;
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+  .sds-sidenav-item:hover { background: var(--sds-bg-subtle); color: var(--sds-text-primary); }
+  .sds-sidenav-item.active { background: var(--sds-nav-item-active-bg); color: var(--sds-nav-item-active-text); font-weight: var(--sds-weight-medium); }
+  .sds-sidenav-item.active:hover { background: var(--sds-color-blue-150); color: var(--sds-nav-item-active-text); }
+  .sds-sidenav-icon {
+    width: 20px; height: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  }
+  .sds-sidenav-icon .material-symbols-outlined {
+    font-size: 20px; color: var(--sds-text-tertiary);
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    transition: color 0.12s;
+  }
+  .sds-sidenav-item:hover .sds-sidenav-icon .material-symbols-outlined { color: var(--sds-color-warm-gray-700); }
+  .sds-sidenav-item.active .sds-sidenav-icon .material-symbols-outlined { color: var(--sds-nav-item-active-text); }
+  .sds-sidenav-group-label {
+    font-size: var(--sds-type-overline); font-weight: var(--sds-weight-semibold);
+    color: var(--sds-color-warm-gray-400); text-transform: uppercase;
+    letter-spacing: 0.4px; padding: var(--sds-space-500) var(--sds-space-300) var(--sds-space-150);
+  }
+  .sds-sidenav-group-label:first-child { padding-top: var(--sds-space-200); }
 
-    /* ── Header ── */
-    .sds-header {
-      height: 56px;
-      display: flex;
-      align-items: center;
-      padding: 0 var(--sds-space-600);
-      border-bottom: 1px solid var(--sds-border-default);
-      background: var(--sds-bg-page);
-      flex-shrink: 0;
-      gap: var(--sds-space-400);
-      z-index: 10;
-    }
-    .sds-header-mark {
-      width: 28px; height: 28px;
-      border-radius: 6px;
-      background: var(--sds-interactive-primary);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    .sds-header-mark .material-symbols-outlined { color: #fff; font-size: 18px; }
-    .sds-header-title {
-      font-size: var(--sds-type-title);
-      font-weight: var(--sds-weight-semibold);
-      color: var(--sds-text-primary);
-    }
-    .sds-header-meta {
-      margin-left: auto;
-      font-size: var(--sds-type-caption);
-      color: var(--sds-text-tertiary);
-      display: flex; align-items: center; gap: var(--sds-space-200);
-    }
-    .sds-tag {
-      display: inline-flex; align-items: center;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: var(--sds-type-caption);
-      font-weight: var(--sds-weight-semibold);
-      line-height: var(--sds-leading-snug);
-    }
-    .sds-tag--blue { background: var(--sds-color-blue-050); color: var(--sds-color-blue-700); }
-    .sds-tag--green { background: var(--sds-color-green-050); color: var(--sds-color-green-500); }
-    .sds-tag--yellow { background: var(--sds-color-yellow-050); color: var(--sds-color-yellow-500); }
-    .sds-tag--red { background: var(--sds-color-red-050); color: var(--sds-color-red-500); }
-    .sds-tag--purple { background: var(--sds-color-purple-050); color: var(--sds-color-purple-500); }
-    .sds-tag--neutral { background: var(--sds-color-warm-gray-100); color: var(--sds-color-warm-gray-650); }
+  /* ============================================================
+     Main Content Area
+     ============================================================ */
+  .main-content {
+    flex: 1; overflow-y: auto; background: var(--sds-bg-page);
+    padding: var(--sds-space-800) var(--sds-space-1000) var(--sds-space-1600);
+    max-height: 100vh; position: relative;
+  }
+  .main-content > .section p,
+  .main-content > .section .callout,
+  .main-content > .section > ul,
+  .main-content > .section > ol { max-width: 860px; }
 
-    /* ── Layout ── */
-    .sds-layout { display: flex; flex: 1; overflow: hidden; }
+  /* Scroll progress bar */
+  .scroll-progress {
+    position: sticky; top: calc(-1 * var(--sds-space-800)); left: 0; right: 0; z-index: 5;
+    padding-top: var(--sds-space-800);
+    margin: calc(-1 * var(--sds-space-800)) calc(-1 * var(--sds-space-1000)) var(--sds-space-800);
+    background: var(--sds-bg-page);
+  }
+  .scroll-progress-track {
+    height: 3px; background: var(--sds-border-subtle); border-radius: 2px;
+  }
+  .scroll-progress-bar {
+    height: 100%; width: 0%; background: var(--sds-color-blue-450);
+    border-radius: 2px; transition: width 0.1s ease;
+  }
 
-    /* ── Sidenav ── */
+  /* Page header */
+  .page-header {
+    margin-bottom: var(--sds-space-800);
+    padding-bottom: var(--sds-space-600);
+    border-bottom: 1px solid var(--sds-border-default);
+  }
+  .page-header h1 {
+    font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold);
+    margin-bottom: var(--sds-space-100); letter-spacing: var(--sds-tracking-tight);
+    line-height: var(--sds-leading-tight);
+  }
+  .page-header .page-desc {
+    font-size: var(--sds-type-body); color: var(--sds-text-secondary);
+    line-height: var(--sds-leading-normal); max-width: 640px;
+  }
+  .page-header-tags { display: flex; gap: var(--sds-space-200); margin-top: var(--sds-space-400); flex-wrap: wrap; }
+
+  /* Section */
+  .section { margin-bottom: var(--sds-space-1200); }
+  .section h2 {
+    font-size: var(--sds-type-heading); font-weight: var(--sds-weight-semibold);
+    margin-bottom: var(--sds-space-150); line-height: var(--sds-leading-tight);
+  }
+  .section .section-desc {
+    font-size: var(--sds-type-label); color: var(--sds-text-secondary);
+    margin-bottom: var(--sds-space-500); line-height: var(--sds-leading-normal);
+  }
+  .section h3 {
+    font-size: var(--sds-type-body); font-weight: var(--sds-weight-semibold);
+    color: var(--sds-color-warm-gray-700); margin: var(--sds-space-600) 0 var(--sds-space-300);
+  }
+  .section-divider {
+    border: none; border-top: 1px solid var(--sds-border-default);
+    margin: var(--sds-space-1200) 0 var(--sds-space-1200);
+  }
+
+  /* ============================================================
+     Stat Cards (Design System Lab)
+     ============================================================ */
+  .stat-row { display: flex; gap: var(--sds-space-300); flex-wrap: wrap; margin-bottom: var(--sds-space-600); }
+  .sds-stat-card {
+    background: var(--sds-color-white); border: 1px solid var(--sds-color-warm-gray-150);
+    border-radius: 8px; padding: var(--sds-space-500) var(--sds-space-600);
+    display: flex; flex-direction: column; gap: var(--sds-space-050);
+    flex: 1; min-width: 120px; text-align: center;
+  }
+  .sds-stat-card__label {
+    font-size: var(--sds-type-caption); color: var(--sds-color-warm-gray-500);
+    font-weight: var(--sds-weight-medium); text-transform: uppercase;
+    letter-spacing: var(--sds-tracking-wide); margin: 0; line-height: 1;
+  }
+  .sds-stat-card__value {
+    font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold);
+    color: var(--sds-interactive-primary); margin-top: var(--sds-space-150); line-height: 1.1;
+  }
+  .sds-stat-card__detail {
+    font-size: var(--sds-type-caption); color: var(--sds-text-secondary);
+    margin-top: var(--sds-space-050);
+  }
+
+  /* ============================================================
+     Cards
+     ============================================================ */
+  .card {
+    background: var(--sds-bg-card); border: 1px solid var(--sds-border-default);
+    border-radius: 8px; padding: var(--sds-space-600); margin-bottom: var(--sds-space-400);
+  }
+  .card h3 {
+    font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold);
+    margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary);
+  }
+  .card h4 {
+    font-size: var(--sds-type-caption); font-weight: var(--sds-weight-semibold);
+    color: var(--sds-color-warm-gray-400); text-transform: uppercase;
+    letter-spacing: 0.4px; margin: var(--sds-space-400) 0 var(--sds-space-150);
+  }
+  .card p, .card li {
+    color: var(--sds-text-secondary); font-size: var(--sds-type-label);
+    line-height: var(--sds-leading-relaxed);
+  }
+  .card ul { padding-left: 18px; margin-top: var(--sds-space-100); }
+  .card li { margin-bottom: var(--sds-space-100); }
+  .card li strong { color: var(--sds-text-primary); }
+
+  /* Grids */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sds-space-400); }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--sds-space-400); }
+
+  /* ============================================================
+     Tags (Design System Lab)
+     ============================================================ */
+  .sds-tag {
+    display: inline-flex; align-items: center; gap: var(--sds-space-100);
+    padding: var(--sds-space-050) var(--sds-space-200);
+    font-family: inherit; font-size: var(--sds-type-overline);
+    font-weight: var(--sds-weight-semibold); line-height: var(--sds-leading-normal);
+    border-radius: 4px; white-space: nowrap; vertical-align: middle;
+    margin-right: var(--sds-space-100); margin-bottom: var(--sds-space-100);
+  }
+  .sds-tag--info { background: var(--sds-status-info-bg); color: var(--sds-status-info-text); }
+  .sds-tag--success { background: var(--sds-status-success-bg); color: var(--sds-status-success-text); }
+  .sds-tag--warning { background: var(--sds-status-warning-bg); color: var(--sds-status-warning-text); }
+  .sds-tag--error { background: var(--sds-status-error-bg); color: var(--sds-status-error-text); }
+  .sds-tag--purple { background: var(--sds-status-purple-bg); color: var(--sds-status-purple-text); }
+  .sds-tag--neutral { background: var(--sds-status-neutral-bg); color: var(--sds-status-neutral-text); }
+
+  /* ============================================================
+     Callout
+     ============================================================ */
+  .callout {
+    border-left: 4px solid var(--sds-interactive-primary); background: var(--sds-status-info-bg);
+    padding: var(--sds-space-400) var(--sds-space-500); border-radius: 0 8px 8px 0;
+    margin: var(--sds-space-500) 0;
+  }
+  .callout.callout-green { border-left-color: var(--sds-color-green-400); background: var(--sds-status-success-bg); }
+  .callout.callout-yellow { border-left-color: var(--sds-color-yellow-200); background: var(--sds-status-warning-bg); }
+  .callout.callout-red { border-left-color: var(--sds-color-red-500); background: var(--sds-status-error-bg); }
+  .callout.callout-purple { border-left-color: var(--sds-color-purple-550); background: var(--sds-status-purple-bg); }
+  .callout strong { color: var(--sds-text-primary); }
+  .callout p { color: var(--sds-text-secondary); font-size: var(--sds-type-label); margin: 0; line-height: var(--sds-leading-normal); }
+
+  /* ============================================================
+     Tables (Design System Lab)
+     ============================================================ */
+  .sds-table-container {
+    background: var(--sds-color-white); border: 1px solid var(--sds-color-warm-gray-150);
+    border-radius: 8px; overflow: hidden; overflow-x: auto; margin: var(--sds-space-300) 0;
+    position: relative;
+  }
+  .sds-table-container::after {
+    content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 32px;
+    background: linear-gradient(to right, transparent, var(--sds-color-warm-gray-025));
+    pointer-events: none; border-radius: 0 8px 8px 0;
+  }
+  .sds-table td:first-child, .sds-table th:first-child {
+    position: sticky; left: 0; background: inherit; z-index: 1;
+  }
+  .sds-table th:first-child { background: var(--sds-color-warm-gray-025); }
+  .sds-table { width: 100%; border-collapse: collapse; font-size: var(--sds-type-label); }
+  .sds-table th {
+    background: var(--sds-color-warm-gray-025); border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    padding: var(--sds-space-250) var(--sds-space-400); text-align: left;
+    font-size: var(--sds-type-caption); font-weight: var(--sds-weight-semibold);
+    color: var(--sds-color-warm-gray-550); white-space: nowrap;
+  }
+  .sds-table td {
+    padding: var(--sds-space-250) var(--sds-space-400); color: var(--sds-color-warm-gray-700);
+    border-bottom: 1px solid var(--sds-color-warm-gray-100); vertical-align: top;
+  }
+  .sds-table tbody tr:last-child td { border-bottom: none; }
+  .sds-table td:first-child { font-weight: var(--sds-weight-medium); color: var(--sds-text-primary); }
+
+  /* ============================================================
+     Flow strip
+     ============================================================ */
+  .flow-strip {
+    display: flex; align-items: center; gap: 0; overflow-x: auto;
+    padding: var(--sds-space-300) 0; margin: var(--sds-space-300) 0;
+  }
+  .flow-step {
+    background: var(--sds-bg-card); border: 1px solid var(--sds-border-default);
+    border-radius: 8px; padding: var(--sds-space-300) var(--sds-space-400);
+    min-width: 140px; text-align: center; flex-shrink: 0;
+  }
+  .flow-step .step-num {
+    font-size: var(--sds-type-overline); font-weight: var(--sds-weight-semibold);
+    color: var(--sds-interactive-primary); text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .flow-step .step-name { font-size: var(--sds-type-label); font-weight: var(--sds-weight-medium); margin-top: var(--sds-space-050); }
+  .flow-step .step-time { font-size: var(--sds-type-overline); color: var(--sds-color-warm-gray-400); margin-top: var(--sds-space-050); }
+  .flow-arrow { font-size: var(--sds-type-subheading); color: var(--sds-color-warm-gray-300); padding: 0 var(--sds-space-150); flex-shrink: 0; }
+
+  /* ============================================================
+     Mode cards
+     ============================================================ */
+  .mode-card {
+    background: var(--sds-bg-card); border: 1px solid var(--sds-border-default);
+    border-radius: 8px; overflow: hidden;
+  }
+  .mode-card-header {
+    padding: var(--sds-space-400) var(--sds-space-500);
+    border-bottom: 1px solid var(--sds-border-subtle);
+    display: flex; align-items: center; gap: var(--sds-space-300);
+  }
+  .mode-card-header h3 {
+    font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold);
+    margin: 0; color: var(--sds-text-primary);
+  }
+  .mode-card-body { padding: var(--sds-space-500); }
+  .mode-card-body li {
+    font-size: var(--sds-type-label); color: var(--sds-text-secondary);
+    line-height: var(--sds-leading-relaxed); margin-bottom: var(--sds-space-150);
+  }
+  .mode-card-body ul { padding-left: 18px; }
+
+  /* ============================================================
+     Risk cards
+     ============================================================ */
+  .risk-card {
+    background: var(--sds-bg-card); border: 1px solid var(--sds-border-default);
+    border-radius: 8px; padding: var(--sds-space-600); margin-bottom: var(--sds-space-400);
+  }
+  .risk-card-header {
+    display: flex; align-items: center; gap: var(--sds-space-300);
+    margin-bottom: var(--sds-space-300);
+  }
+  .risk-card-header h4 {
+    font-size: var(--sds-type-title); font-weight: var(--sds-weight-semibold); flex: 1;
+  }
+  .risk-card p {
+    font-size: var(--sds-type-label); color: var(--sds-text-secondary);
+    line-height: var(--sds-leading-relaxed);
+  }
+  .risk-card ul { padding-left: 18px; margin-top: var(--sds-space-200); }
+  .risk-card li {
+    font-size: var(--sds-type-label); color: var(--sds-text-secondary);
+    line-height: var(--sds-leading-relaxed); margin-bottom: var(--sds-space-100);
+  }
+
+  /* ============================================================
+     Pitch cards
+     ============================================================ */
+  .pitch-card {
+    background: var(--sds-bg-card); border: 1px solid var(--sds-border-default);
+    border-radius: 8px; overflow: hidden; margin-bottom: var(--sds-space-400);
+  }
+  .pitch-card-header {
+    display: flex; align-items: center; gap: var(--sds-space-300);
+    padding: var(--sds-space-400) var(--sds-space-500);
+    border-bottom: 1px solid var(--sds-border-subtle);
+    background: var(--sds-bg-surface);
+  }
+  .pitch-avatar {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .pitch-avatar .material-symbols-outlined { color: #fff; font-size: 20px; }
+  .pitch-card-header h4 {
+    font-size: var(--sds-type-title); font-weight: var(--sds-weight-semibold);
+  }
+  .pitch-card-header span {
+    font-size: var(--sds-type-caption); color: var(--sds-text-tertiary);
+  }
+  .pitch-card-body { padding: var(--sds-space-500); }
+  .pitch-card-body blockquote {
+    font-size: var(--sds-type-label); color: var(--sds-text-secondary);
+    line-height: var(--sds-leading-relaxed); font-style: italic;
+    border-left: 3px solid var(--sds-border-default);
+    padding-left: var(--sds-space-400); margin: 0;
+  }
+
+  /* ============================================================
+     Pipeline
+     ============================================================ */
+  .pipeline { margin-bottom: var(--sds-space-600); }
+  .pipeline-stage {
+    display: flex; align-items: flex-start; gap: var(--sds-space-400);
+    margin-bottom: var(--sds-space-200);
+  }
+  .pipeline-dot-col {
+    display: flex; flex-direction: column; align-items: center;
+    width: 24px; flex-shrink: 0; padding-top: 4px;
+  }
+  .pipeline-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--sds-interactive-primary); flex-shrink: 0;
+  }
+  .pipeline-line {
+    width: 2px; flex: 1; min-height: 20px; background: var(--sds-border-default);
+  }
+  .pipeline-content { flex: 1; padding-bottom: var(--sds-space-400); }
+  .pipeline-content strong {
+    font-size: var(--sds-type-body); color: var(--sds-text-primary);
+  }
+  .pipeline-content p {
+    font-size: var(--sds-type-label); color: var(--sds-text-secondary);
+    line-height: var(--sds-leading-relaxed); margin-top: var(--sds-space-050);
+  }
+
+  /* Code block */
+  .tree {
+    font-family: var(--sds-font-mono); font-size: var(--sds-type-caption);
+    line-height: 1.8; color: var(--sds-text-secondary);
+    background: var(--sds-bg-surface); padding: var(--sds-space-500) var(--sds-space-600);
+    border-radius: 8px; overflow-x: auto; white-space: pre-wrap; word-break: break-word;
+    margin: var(--sds-space-300) 0; border: 1px solid var(--sds-border-subtle);
+  }
+  .tree .hl { color: var(--sds-interactive-primary); font-weight: var(--sds-weight-semibold); }
+
+  /* Metric icons */
+  .metric-card { text-align: center; }
+  .metric-card .material-symbols-outlined {
+    font-size: 28px; color: var(--sds-interactive-primary); margin-bottom: var(--sds-space-200);
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 28;
+  }
+  .metric-card h3 { text-align: center; }
+  .metric-card p { text-align: center; font-size: var(--sds-type-caption) !important; }
+
+  /* ============================================================
+     Responsive
+     ============================================================ */
+  @media (max-width: 900px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    .app-body { flex-direction: column; }
     .sds-sidenav {
-      width: 240px;
-      background: var(--sds-nav-sidebar-bg);
-      border-right: 1px solid var(--sds-border-default);
-      overflow-y: auto;
-      flex-shrink: 0;
-      padding: var(--sds-space-400) 0;
+      width: 100%; min-width: 100%; flex-direction: row; overflow-x: auto;
+      padding: var(--sds-space-200) var(--sds-space-300); border-right: none;
+      border-bottom: 1px solid var(--sds-border-default); gap: var(--sds-space-100);
     }
-    .sds-sidenav-group { margin-bottom: var(--sds-space-200); }
-    .sds-sidenav-group-label {
-      font-size: var(--sds-type-overline);
-      font-weight: var(--sds-weight-semibold);
-      color: var(--sds-nav-section-header);
-      text-transform: uppercase;
-      letter-spacing: var(--sds-tracking-wide);
-      padding: var(--sds-space-200) var(--sds-space-500) var(--sds-space-100);
-    }
-    .sds-sidenav-item {
-      display: flex;
-      align-items: center;
-      gap: var(--sds-space-200);
-      padding: var(--sds-space-150) var(--sds-space-500);
-      font-size: var(--sds-type-label);
-      color: var(--sds-nav-item-text);
-      cursor: pointer;
-      border-radius: 0;
-      transition: background 0.15s ease, color 0.15s ease;
-      text-decoration: none;
-      margin: 0 var(--sds-space-200);
-      border-radius: 6px;
-    }
-    .sds-sidenav-item:hover { background: var(--sds-color-warm-gray-050); }
-    .sds-sidenav-item.active {
-      background: var(--sds-nav-item-active-bg);
-      color: var(--sds-nav-item-active-text);
-      font-weight: var(--sds-weight-semibold);
-    }
-    .sds-sidenav-item .material-symbols-outlined { font-size: 18px; }
-
-    /* ── Main ── */
-    .main-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: var(--sds-space-1000) var(--sds-space-1200);
-      scroll-behavior: smooth;
-    }
-
-    /* ── Progress ── */
-    .scroll-progress {
-      position: sticky;
-      top: 0;
-      left: 0;
-      height: 3px;
-      background: var(--sds-interactive-primary);
-      width: 0%;
-      z-index: 5;
-      transition: width 0.1s linear;
-      margin: calc(-1 * var(--sds-space-1000)) calc(-1 * var(--sds-space-1200)) 0;
-    }
-
-    /* ── Content ── */
-    .content-constraint { max-width: 860px; }
-
-    /* Sections */
-    .section { margin-bottom: var(--sds-space-1600); }
-    .section h2 {
-      font-size: var(--sds-type-heading);
-      font-weight: var(--sds-weight-semibold);
-      line-height: var(--sds-leading-tight);
-      margin-bottom: var(--sds-space-100);
-      color: var(--sds-text-primary);
-    }
-    .section-desc {
-      font-size: var(--sds-type-body);
-      color: var(--sds-text-secondary);
-      line-height: var(--sds-leading-relaxed);
-      margin-bottom: var(--sds-space-600);
-    }
-
-    /* Page Header */
-    .page-header {
-      border-bottom: 1px solid var(--sds-border-default);
-      padding-bottom: var(--sds-space-800);
-      margin-bottom: var(--sds-space-1000);
-    }
-    .page-header h1 {
-      font-size: var(--sds-type-display);
-      font-weight: var(--sds-weight-semibold);
-      line-height: var(--sds-leading-tight);
-      margin-bottom: var(--sds-space-300);
-    }
-    .page-header p {
-      font-size: var(--sds-type-body);
-      color: var(--sds-text-secondary);
-      line-height: var(--sds-leading-relaxed);
-      max-width: 640px;
-    }
-    .page-header-tags { display: flex; gap: var(--sds-space-200); margin-top: var(--sds-space-400); flex-wrap: wrap; }
-
-    /* Stat row */
-    .stat-row {
-      display: flex;
-      gap: var(--sds-space-400);
-      margin-bottom: var(--sds-space-800);
-      flex-wrap: wrap;
-    }
-    .sds-stat-card {
-      flex: 1;
-      min-width: 150px;
-      background: var(--sds-bg-card);
-      border: 1px solid var(--sds-border-default);
-      border-radius: 8px;
-      padding: var(--sds-space-500);
-      text-align: center;
-    }
-    .sds-stat-card .stat-label {
-      font-size: var(--sds-type-caption);
-      font-weight: var(--sds-weight-semibold);
-      text-transform: uppercase;
-      letter-spacing: var(--sds-tracking-wide);
-      color: var(--sds-text-tertiary);
-      margin-bottom: var(--sds-space-100);
-    }
-    .sds-stat-card .stat-value {
-      font-size: 26px;
-      font-weight: var(--sds-weight-bold);
-      color: var(--sds-interactive-primary);
-      line-height: var(--sds-leading-tight);
-    }
-    .sds-stat-card .stat-detail {
-      font-size: var(--sds-type-caption);
-      color: var(--sds-text-secondary);
-      margin-top: var(--sds-space-100);
-    }
-
-    /* Cards */
-    .card {
-      background: var(--sds-bg-card);
-      border: 1px solid var(--sds-border-default);
-      border-radius: 8px;
-      padding: var(--sds-space-500);
-      margin-bottom: var(--sds-space-400);
-    }
-    .card h3 {
-      font-size: var(--sds-type-subheading);
-      font-weight: var(--sds-weight-semibold);
-      margin-bottom: var(--sds-space-300);
-      line-height: var(--sds-leading-snug);
-    }
-    .card p, .card li {
-      font-size: var(--sds-type-body);
-      color: var(--sds-text-secondary);
-      line-height: var(--sds-leading-relaxed);
-    }
-    .card ul { padding-left: var(--sds-space-500); margin-top: var(--sds-space-200); }
-    .card li { margin-bottom: var(--sds-space-150); }
-    .card li strong { color: var(--sds-text-primary); }
-
-    /* Grid */
-    .grid-2 { display: flex; gap: var(--sds-space-400); flex-wrap: wrap; }
-    .grid-2 > * { flex: 1; min-width: 280px; }
-    .grid-3 { display: flex; gap: var(--sds-space-400); flex-wrap: wrap; }
-    .grid-3 > * { flex: 1; min-width: 220px; }
-
-    /* Callouts */
-    .callout {
-      border-left: 4px solid var(--sds-color-blue-200);
-      background: var(--sds-color-blue-050);
-      border-radius: 0 8px 8px 0;
-      padding: var(--sds-space-400) var(--sds-space-500);
-      margin-bottom: var(--sds-space-400);
-    }
-    .callout strong { display: block; margin-bottom: var(--sds-space-100); color: var(--sds-text-primary); }
-    .callout p { font-size: var(--sds-type-body); color: var(--sds-text-secondary); line-height: var(--sds-leading-relaxed); }
-    .callout--green { border-color: var(--sds-color-green-500); background: var(--sds-color-green-025); }
-    .callout--yellow { border-color: var(--sds-color-yellow-500); background: var(--sds-color-yellow-025); }
-    .callout--red { border-color: var(--sds-color-red-500); background: var(--sds-color-red-025); }
-    .callout--purple { border-color: var(--sds-color-purple-500); background: var(--sds-color-purple-025); }
-
-    /* Tables */
-    .sds-table-container {
-      overflow-x: auto;
-      border: 1px solid var(--sds-border-default);
-      border-radius: 8px;
-      margin-bottom: var(--sds-space-400);
-      position: relative;
-    }
-    .sds-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: var(--sds-type-body);
-    }
-    .sds-table th {
-      text-align: left;
-      padding: var(--sds-space-300) var(--sds-space-400);
-      font-size: var(--sds-type-caption);
-      font-weight: var(--sds-weight-semibold);
-      text-transform: uppercase;
-      letter-spacing: var(--sds-tracking-wide);
-      color: var(--sds-text-tertiary);
-      background: var(--sds-bg-surface);
-      border-bottom: 1px solid var(--sds-border-default);
-      white-space: nowrap;
-      position: sticky;
-      top: 0;
-    }
-    .sds-table td {
-      padding: var(--sds-space-300) var(--sds-space-400);
-      border-bottom: 1px solid var(--sds-border-subtle);
-      color: var(--sds-text-secondary);
-      vertical-align: top;
-    }
-    .sds-table tr:last-child td { border-bottom: none; }
-    .sds-table td strong { color: var(--sds-text-primary); }
-
-    /* Flow strip */
-    .flow-strip {
-      display: flex;
-      align-items: stretch;
-      overflow-x: auto;
-      margin-bottom: var(--sds-space-600);
-      gap: 0;
-      padding-bottom: var(--sds-space-200);
-    }
-    .flow-step {
-      flex: 1;
-      min-width: 140px;
-      text-align: center;
-      padding: var(--sds-space-400) var(--sds-space-300);
-      background: var(--sds-bg-card);
-      border: 1px solid var(--sds-border-default);
-      position: relative;
-    }
-    .flow-step:first-child { border-radius: 8px 0 0 8px; }
-    .flow-step:last-child { border-radius: 0 8px 8px 0; }
-    .flow-step + .flow-step { border-left: none; }
-    .flow-step .step-num {
-      font-size: var(--sds-type-caption);
-      font-weight: var(--sds-weight-semibold);
-      color: var(--sds-interactive-primary);
-      text-transform: uppercase;
-      letter-spacing: var(--sds-tracking-wide);
-      margin-bottom: var(--sds-space-100);
-    }
-    .flow-step .step-name {
-      font-size: var(--sds-type-label);
-      font-weight: var(--sds-weight-semibold);
-      color: var(--sds-text-primary);
-      margin-bottom: var(--sds-space-100);
-    }
-    .flow-step .step-time {
-      font-size: var(--sds-type-caption);
-      color: var(--sds-text-tertiary);
-    }
-    .flow-arrow {
-      display: flex;
-      align-items: center;
-      color: var(--sds-color-warm-gray-300);
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-
-    /* Risk cards */
-    .risk-card {
-      background: var(--sds-bg-card);
-      border: 1px solid var(--sds-border-default);
-      border-radius: 8px;
-      padding: var(--sds-space-500);
-      margin-bottom: var(--sds-space-400);
-    }
-    .risk-card-header {
-      display: flex;
-      align-items: center;
-      gap: var(--sds-space-300);
-      margin-bottom: var(--sds-space-300);
-    }
-    .risk-card-header h4 {
-      font-size: var(--sds-type-title);
-      font-weight: var(--sds-weight-semibold);
-      flex: 1;
-    }
-    .risk-card p {
-      font-size: var(--sds-type-body);
-      color: var(--sds-text-secondary);
-      line-height: var(--sds-leading-relaxed);
-    }
-    .risk-card ul {
-      padding-left: var(--sds-space-500);
-      margin-top: var(--sds-space-200);
-    }
-    .risk-card li {
-      font-size: var(--sds-type-body);
-      color: var(--sds-text-secondary);
-      line-height: var(--sds-leading-relaxed);
-      margin-bottom: var(--sds-space-150);
-    }
-
-    /* Pitch cards */
-    .pitch-card {
-      background: var(--sds-bg-card);
-      border: 1px solid var(--sds-border-default);
-      border-radius: 8px;
-      overflow: hidden;
-      margin-bottom: var(--sds-space-400);
-    }
-    .pitch-card-header {
-      display: flex;
-      align-items: center;
-      gap: var(--sds-space-300);
-      padding: var(--sds-space-400) var(--sds-space-500);
-      border-bottom: 1px solid var(--sds-border-subtle);
-      background: var(--sds-bg-surface);
-    }
-    .pitch-avatar {
-      width: 36px; height: 36px; border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    .pitch-avatar .material-symbols-outlined { color: #fff; font-size: 20px; }
-    .pitch-card-header h4 {
-      font-size: var(--sds-type-title);
-      font-weight: var(--sds-weight-semibold);
-    }
-    .pitch-card-header span {
-      font-size: var(--sds-type-caption);
-      color: var(--sds-text-tertiary);
-    }
-    .pitch-card-body {
-      padding: var(--sds-space-500);
-    }
-    .pitch-card-body blockquote {
-      font-size: var(--sds-type-body);
-      color: var(--sds-text-secondary);
-      line-height: var(--sds-leading-relaxed);
-      font-style: italic;
-      border-left: 3px solid var(--sds-border-default);
-      padding-left: var(--sds-space-400);
-    }
-
-    /* Mode cards */
-    .mode-card {
-      background: var(--sds-bg-card);
-      border: 1px solid var(--sds-border-default);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .mode-card-header {
-      padding: var(--sds-space-400) var(--sds-space-500);
-      border-bottom: 1px solid var(--sds-border-subtle);
-      display: flex;
-      align-items: center;
-      gap: var(--sds-space-300);
-    }
-    .mode-card-header h3 {
-      font-size: var(--sds-type-subheading);
-      font-weight: var(--sds-weight-semibold);
-      margin: 0;
-    }
-    .mode-card-body {
-      padding: var(--sds-space-500);
-    }
-    .mode-card-body li {
-      font-size: var(--sds-type-body);
-      color: var(--sds-text-secondary);
-      line-height: var(--sds-leading-relaxed);
-      margin-bottom: var(--sds-space-150);
-    }
-    .mode-card-body ul { padding-left: var(--sds-space-500); }
-
-    /* Pipeline */
-    .pipeline { margin-bottom: var(--sds-space-600); }
-    .pipeline-stage {
-      display: flex;
-      align-items: flex-start;
-      gap: var(--sds-space-400);
-      margin-bottom: var(--sds-space-200);
-    }
-    .pipeline-dot-col {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 24px;
-      flex-shrink: 0;
-      padding-top: 4px;
-    }
-    .pipeline-dot {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: var(--sds-interactive-primary);
-      flex-shrink: 0;
-    }
-    .pipeline-line {
-      width: 2px;
-      flex: 1;
-      min-height: 20px;
-      background: var(--sds-border-default);
-    }
-    .pipeline-content {
-      flex: 1;
-      padding-bottom: var(--sds-space-400);
-    }
-    .pipeline-content strong {
-      font-size: var(--sds-type-body);
-      color: var(--sds-text-primary);
-    }
-    .pipeline-content p {
-      font-size: var(--sds-type-label);
-      color: var(--sds-text-secondary);
-      line-height: var(--sds-leading-relaxed);
-      margin-top: var(--sds-space-050);
-    }
-
-    /* Section divider */
-    .section-divider {
-      height: 1px;
-      background: var(--sds-border-default);
-      margin: var(--sds-space-1000) 0;
-    }
-
-    /* Code block */
-    .code-block {
-      background: var(--sds-color-warm-gray-900);
-      color: #e0e0e0;
-      border-radius: 8px;
-      padding: var(--sds-space-500);
-      font-family: var(--sds-font-mono);
-      font-size: var(--sds-type-label);
-      line-height: 1.7;
-      overflow-x: auto;
-      margin-bottom: var(--sds-space-400);
-    }
-    .code-block .code-comment { color: #6B6760; }
-    .code-block .code-keyword { color: #7ecbf0; }
-    .code-block .code-arrow { color: #928C83; }
-
-    /* Responsive */
-    @media (max-width: 900px) {
-      .sds-sidenav { display: none; }
-      .main-content { padding: var(--sds-space-600) var(--sds-space-500); }
-      .grid-2, .grid-3 { flex-direction: column; }
-      .stat-row { flex-direction: column; }
-      .flow-strip { flex-direction: column; }
-      .flow-step { border-radius: 0 !important; border-left: 1px solid var(--sds-border-default) !important; }
-      .flow-step:first-child { border-radius: 8px 8px 0 0 !important; }
-      .flow-step:last-child { border-radius: 0 0 8px 8px !important; }
-      .flow-step + .flow-step { border-top: none; }
-      .flow-arrow { display: none; }
-    }
-  </style>
+    .sds-sidenav-group-label { display: none; }
+    .sds-sidenav-item { white-space: nowrap; padding: var(--sds-space-150) var(--sds-space-300); }
+    .main-content { max-height: none; padding: var(--sds-space-600) var(--sds-space-500) var(--sds-space-1200); }
+    .stat-row { flex-wrap: wrap; }
+    .sds-stat-card { min-width: calc(50% - var(--sds-space-300)); }
+  }
+</style>
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="sds-header">
-    <div class="sds-header-mark">
-      <span class="material-symbols-outlined">strategy</span>
-    </div>
-    <span class="sds-header-title">Claude Design Strategy</span>
-    <div class="sds-header-meta">
-      <span class="sds-tag sds-tag--blue">Definitive Strategy</span>
-      <span>April 2026</span>
-    </div>
-  </header>
-
-  <div class="sds-layout">
-
-    <!-- Sidenav -->
-    <nav class="sds-sidenav">
-      <div class="sds-sidenav-group">
-        <div class="sds-sidenav-group-label">Overview</div>
-        <a class="sds-sidenav-item active" onclick="scrollToSection(event, 'overview')">
-          <span class="material-symbols-outlined">dashboard</span> Executive Summary
-        </a>
-        <a class="sds-sidenav-item" onclick="scrollToSection(event, 'transitions')">
-          <span class="material-symbols-outlined">swap_horiz</span> Three Transitions
-        </a>
-      </div>
-
-      <div class="sds-sidenav-group">
-        <div class="sds-sidenav-group-label">The Case</div>
-        <a class="sds-sidenav-item" onclick="scrollToSection(event, 'speed')">
-          <span class="material-symbols-outlined">speed</span> Speed Argument
-        </a>
-        <a class="sds-sidenav-item" onclick="scrollToSection(event, 'regulatory')">
-          <span class="material-symbols-outlined">verified_user</span> Regulatory Argument
-        </a>
-      </div>
-
-      <div class="sds-sidenav-group">
-        <div class="sds-sidenav-group-label">Practice Model</div>
-        <a class="sds-sidenav-item" onclick="scrollToSection(event, 'practice')">
-          <span class="material-symbols-outlined">code</span> Code-First Transition
-        </a>
-        <a class="sds-sidenav-item" onclick="scrollToSection(event, 'modes')">
-          <span class="material-symbols-outlined">tune</span> Explore / Ship Modes
-        </a>
-        <a class="sds-sidenav-item" onclick="scrollToSection(event, 'gate')">
-          <span class="material-symbols-outlined">fact_check</span> Transition Gate
-        </a>
-      </div>
-
-      <div class="sds-sidenav-group">
-        <div class="sds-sidenav-group-label">Cross-Functional</div>
-        <a class="sds-sidenav-item" onclick="scrollToSection(event, 'pm')">
-          <span class="material-symbols-outlined">group</span> PM Collaboration
-        </a>
-        <a class="sds-sidenav-item" onclick="scrollToSection(event, 'engineering')">
-          <span class="material-symbols-outlined">engineering</span> Engineering Alignment
-        </a>
-      </div>
-
-      <div class="sds-sidenav-group">
-        <div class="sds-sidenav-group-label">Governance</div>
-        <a class="sds-sidenav-item" onclick="scrollToSection(event, 'governance')">
-          <span class="material-symbols-outlined">admin_panel_settings</span> Governance Model
-        </a>
-        <a class="sds-sidenav-item" onclick="scrollToSection(event, 'starterkit')">
-          <span class="material-symbols-outlined">inventory_2</span> Starter Kit
-        </a>
-        <a class="sds-sidenav-item" onclick="scrollToSection(event, 'staffing')">
-          <span class="material-symbols-outlined">people</span> Staffing
-        </a>
-      </div>
-
-      <div class="sds-sidenav-group">
-        <div class="sds-sidenav-group-label">Risk &amp; Readiness</div>
-        <a class="sds-sidenav-item" onclick="scrollToSection(event, 'risks')">
-          <span class="material-symbols-outlined">warning</span> Risk Analysis
-        </a>
-        <a class="sds-sidenav-item" onclick="scrollToSection(event, 'implementation')">
-          <span class="material-symbols-outlined">rocket_launch</span> Implementation Plan
-        </a>
-        <a class="sds-sidenav-item" onclick="scrollToSection(event, 'pitches')">
-          <span class="material-symbols-outlined">campaign</span> Stakeholder Pitches
-        </a>
-      </div>
-    </nav>
-
-    <!-- Main content -->
-    <main class="main-content" id="mainContent">
-      <div class="scroll-progress" id="scrollProgress"></div>
-      <div class="content-constraint">
-
-        <!-- ═══════════════════════════════════════ -->
-        <!-- OVERVIEW -->
-        <!-- ═══════════════════════════════════════ -->
-        <div class="page-header" id="overview">
-          <h1>Running Claude in a Design Organization at Scale</h1>
-          <p>A strategy for transitioning a large, regulated design organization from Figma-centric to code-first practice — with governance, cross-functional alignment, and startup speed where it counts.</p>
-          <div class="page-header-tags">
-            <span class="sds-tag sds-tag--blue">Code-First Design</span>
-            <span class="sds-tag sds-tag--green">Regulated Industry</span>
-            <span class="sds-tag sds-tag--purple">Two-Mode Operating Model</span>
-            <span class="sds-tag sds-tag--neutral">16-Week Rollout</span>
-          </div>
-        </div>
-
-        <!-- Key metrics -->
-        <div class="stat-row">
-          <div class="sds-stat-card">
-            <div class="stat-label">Speed Gain</div>
-            <div class="stat-value">2-3x</div>
-            <div class="stat-detail">End-to-end feature delivery</div>
-          </div>
-          <div class="sds-stat-card">
-            <div class="stat-label">Handoff Savings</div>
-            <div class="stat-value">3-7 days</div>
-            <div class="stat-detail">Per feature, interpretation gap</div>
-          </div>
-          <div class="sds-stat-card">
-            <div class="stat-label">PMF Variant Testing</div>
-            <div class="stat-value">2-3x</div>
-            <div class="stat-detail">More variants per cycle</div>
-          </div>
-          <div class="sds-stat-card">
-            <div class="stat-label">Hypothesis to Prototype</div>
-            <div class="stat-value">1-2 days</div>
-            <div class="stat-detail">Down from 1-2 weeks</div>
-          </div>
-          <div class="sds-stat-card">
-            <div class="stat-label">Central Investment</div>
-            <div class="stat-value">1.5-2</div>
-            <div class="stat-detail">FTEs required (Year 1)</div>
-          </div>
-        </div>
-
-        <!-- ═══════════════════════════════════════ -->
-        <!-- THREE TRANSITIONS -->
-        <!-- ═══════════════════════════════════════ -->
-        <div class="section" id="transitions">
-          <h2>Three Simultaneous Transitions</h2>
-          <p class="section-desc">This strategy navigates three interrelated shifts happening at the same time. Success requires addressing all three — any one in isolation creates an incomplete transformation.</p>
-
-          <div class="grid-3">
-            <div class="card">
-              <h3>Practice Transition</h3>
-              <p>From Figma-centric design to <strong>code-first design</strong>. The primary artifact becomes a working prototype — automatically testable for compliance, eliminating the design-to-engineering interpretation gap.</p>
-            </div>
-            <div class="card">
-              <h3>Operating Model Transition</h3>
-              <p>From uniform process to a <strong>two-mode model</strong>. Scrappy LOBs move at startup speed. Enterprise LOBs maintain audit-ready discipline. The foundation layer is shared; the operating weight varies.</p>
-            </div>
-            <div class="card">
-              <h3>Cross-Functional Transition</h3>
-              <p>From siloed handoffs to <strong>shared infrastructure</strong>. Design standards become ambient in the workspace. Every function that touches UI works from the same conventions.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-divider"></div>
-
-        <!-- ═══════════════════════════════════════ -->
-        <!-- SPEED ARGUMENT -->
-        <!-- ═══════════════════════════════════════ -->
-        <div class="section" id="speed">
-          <h2>The Speed Argument</h2>
-          <p class="section-desc">Real gains are 2-3x for end-to-end feature delivery, concentrated in handoff and clarification. Not 10x. Manage expectations accurately.</p>
-
-          <div class="grid-2">
-            <div class="card" style="border-top: 3px solid var(--sds-color-green-500);">
-              <h3>Where Speed Gains Are Real</h3>
-              <ul>
-                <li><strong>Interpretation gap eliminated: 3-7 days per feature.</strong> The 15 Slack threads after every Figma handoff are answered by the prototype itself.</li>
-                <li><strong>Spec gap eliminated: 1-2 days per feature.</strong> The <code>design-handoff</code> skill follows a checklist, not memory.</li>
-                <li><strong>Rapid variant testing: 2-3x more variants.</strong> Two working prototypes in a single Claude session, tested the same day.</li>
-                <li><strong>Component reuse compounds.</strong> Every component starts from your design system's conventions automatically.</li>
-              </ul>
-            </div>
-            <div class="card" style="border-top: 3px solid var(--sds-color-yellow-500);">
-              <h3>Where Speed Claims Are Overstated</h3>
-              <ul>
-                <li><strong>"10x faster" is marketing.</strong> Real gains concentrate in handoff and clarification, not raw design production.</li>
-                <li><strong>First-time setup is slower.</strong> Learning curve takes 2-4 weeks before net positive. Pilot with adaptable designers.</li>
-                <li><strong>Speed only helps if production is the bottleneck.</strong> Audit the actual bottleneck per team before pitching Claude as the solution.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-divider"></div>
-
-        <!-- ═══════════════════════════════════════ -->
-        <!-- REGULATORY ARGUMENT -->
-        <!-- ═══════════════════════════════════════ -->
-        <div class="section" id="regulatory">
-          <h2>The Regulatory Argument</h2>
-          <p class="section-desc">In a regulated industry, automated-first quality assurance is fundamentally stronger than manual-only review.</p>
-
-          <div class="callout--green callout">
-            <strong>A code prototype can be automatically tested. A Figma mockup cannot.</strong>
-            <p>Accessibility validation, token compliance, keyboard navigation, semantic HTML, component API correctness — all automatically checkable on code. Every check runs on every commit. Violations are caught before human review, not during it.</p>
-          </div>
-
-          <div class="grid-2">
-            <div class="callout">
-              <strong>Eliminates Translation Drift</strong>
-              <p>The gap between "what the designer intended" and "what the engineer built" is the largest source of quality loss. When the designer's artifact IS code, that gap collapses.</p>
-            </div>
-            <div class="callout callout--purple">
-              <strong>Creates an Audit Trail</strong>
-              <p>Every production-bound component has documented evidence: which skills were active, what automated checks passed, which designer reviewed and approved, when.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-divider"></div>
-
-        <!-- ═══════════════════════════════════════ -->
-        <!-- PRACTICE TRANSITION -->
-        <!-- ═══════════════════════════════════════ -->
-        <div class="section" id="practice">
-          <h2>The Practice Transition: Figma to Code-First</h2>
-          <p class="section-desc">Code-first means designers use Claude Code to generate working prototypes as the primary design artifact. It does NOT mean designers write production code or that Figma disappears.</p>
-
-          <div class="callout callout--yellow">
-            <strong>Critical Principle</strong>
-            <p>Think in Figma (or on paper, or a whiteboard). Build in Claude. Review in whatever medium serves the conversation. Code-first must not become code-only.</p>
-          </div>
-
-          <h3 style="margin-bottom: var(--sds-space-400); font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold);">Phased Transition</h3>
-
-          <div class="flow-strip">
-            <div class="flow-step">
-              <div class="step-num">Phase 1</div>
-              <div class="step-name">Parallel Practice</div>
-              <div class="step-time">Months 1-3</div>
-            </div>
-            <div class="flow-step">
-              <div class="step-num">Phase 2</div>
-              <div class="step-name">Code-First for New Work</div>
-              <div class="step-time">Months 3-6</div>
-            </div>
-            <div class="flow-step">
-              <div class="step-num">Phase 3</div>
-              <div class="step-name">Code-First as Default</div>
-              <div class="step-time">Months 6-12</div>
-            </div>
-          </div>
-
-          <div class="sds-table-container">
-            <table class="sds-table">
-              <thead>
-                <tr>
-                  <th>Team Type</th>
-                  <th>Phase 1</th>
-                  <th>Phase 2</th>
-                  <th>Phase 3</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Scrappy LOBs</strong></td>
-                  <td>Critique + specs + hypothesis challenge + sandbox</td>
-                  <td>Code-first for new features</td>
-                  <td>Code-first as default</td>
-                </tr>
-                <tr>
-                  <td><strong>Enterprise LOBs</strong></td>
-                  <td>Critique + specs + hypothesis challenge</td>
-                  <td>Code-first with Ship Mode pipeline</td>
-                  <td>Code-first for new; Figma for existing</td>
-                </tr>
-                <tr>
-                  <td><strong>Design Systems</strong></td>
-                  <td>Foundation skill authoring, starter kits</td>
-                  <td>Refinement from pilot feedback</td>
-                  <td>Ongoing maintenance</td>
-                </tr>
-                <tr>
-                  <td><strong>Research / Strategy</strong></td>
-                  <td>Critique + research synthesis skills</td>
-                  <td>+ cross-functional skills</td>
-                  <td>Same</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="card">
-            <h3>Phase 1 Use Cases</h3>
-            <ul>
-              <li><strong>Design critique:</strong> Screenshots of Figma work evaluated against principles and accessibility. Builds trust without changing workflow.</li>
-              <li><strong>Spec generation:</strong> After completing design in Figma, <code>design-handoff</code> skill generates spec packages. Immediate value to engineering.</li>
-              <li><strong>Hypothesis challenge:</strong> Forces problem validation before prototyping begins — what user problem, what evidence, what assumptions, what's the simplest testable version.</li>
-              <li><strong>Sandbox prototyping:</strong> Willing designers generate components using the Foundation skill. Sandbox repo, not production.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="section-divider"></div>
-
-        <!-- ═══════════════════════════════════════ -->
-        <!-- TWO-MODE MODEL -->
-        <!-- ═══════════════════════════════════════ -->
-        <div class="section" id="modes">
-          <h2>The Two-Mode Operating Model</h2>
-          <p class="section-desc">A shared quality floor with variable operating weight. The foundation is consistent — the speed varies by context.</p>
-
-          <div class="grid-2">
-            <div class="mode-card">
-              <div class="mode-card-header" style="background: var(--sds-color-green-025);">
-                <span class="material-symbols-outlined" style="color: var(--sds-color-green-500); font-size: 22px;">explore</span>
-                <h3>Explore Mode</h3>
-                <span class="sds-tag sds-tag--green">All Teams</span>
-              </div>
-              <div class="mode-card-body">
-                <ul>
-                  <li><strong>Foundation skill:</strong> Always active (the quality floor)</li>
-                  <li><strong>Starter kit skills:</strong> Available</li>
-                  <li><strong>LOB extension skills:</strong> No registry approval needed</li>
-                  <li><strong>Third-party / creative skills:</strong> Available (output cannot ship without transition)</li>
-                  <li><strong>Review:</strong> Self-directed</li>
-                  <li><strong>Only hard constraint:</strong> Foundation skill. Even in "move fast" mode, Claude uses your tokens, conventions, and accessibility baseline.</li>
-                </ul>
-              </div>
-            </div>
-            <div class="mode-card">
-              <div class="mode-card-header" style="background: var(--sds-color-blue-050);">
-                <span class="material-symbols-outlined" style="color: var(--sds-interactive-primary); font-size: 22px;">local_shipping</span>
-                <h3>Ship Mode</h3>
-                <span class="sds-tag sds-tag--blue">Production</span>
-              </div>
-              <div class="mode-card-body">
-                <ul>
-                  <li><strong>Only registry-approved skills</strong></li>
-                  <li><strong>Mandatory review pipeline</strong></li>
-                  <li><strong>Human sign-off required</strong></li>
-                  <li><strong>AI disclosure in artifact metadata</strong></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ═══════════════════════════════════════ -->
-        <!-- TRANSITION GATE -->
-        <!-- ═══════════════════════════════════════ -->
-        <div class="section" id="gate" style="margin-top: var(--sds-space-800);">
-          <h2>The Transition Gate</h2>
-          <p class="section-desc">Six checks between Explore and production. Steps 1-3 are fully automated — strongest guardrails because they don't require willpower.</p>
-
-          <div class="sds-table-container">
-            <table class="sds-table">
-              <thead>
-                <tr>
-                  <th>Check</th>
-                  <th>Method</th>
-                  <th>Enforcement</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Token compliance</strong></td>
-                  <td>Automated lint</td>
-                  <td><span class="sds-tag sds-tag--green">CI/CD — blocks merge</span></td>
-                </tr>
-                <tr>
-                  <td><strong>Accessibility validation</strong></td>
-                  <td>Automated (axe-core)</td>
-                  <td><span class="sds-tag sds-tag--green">CI/CD — blocks merge</span></td>
-                </tr>
-                <tr>
-                  <td><strong>Component API compliance</strong></td>
-                  <td>Automated lint</td>
-                  <td><span class="sds-tag sds-tag--green">CI/CD — blocks merge</span></td>
-                </tr>
-                <tr>
-                  <td><strong>Design review skill</strong></td>
-                  <td>Run skill, attach to PR</td>
-                  <td><span class="sds-tag sds-tag--blue">Skill + designer</span></td>
-                </tr>
-                <tr>
-                  <td><strong>Human sign-off</strong></td>
-                  <td>3 specific questions</td>
-                  <td><span class="sds-tag sds-tag--purple">Named individual</span></td>
-                </tr>
-                <tr>
-                  <td><strong>AI disclosure</strong></td>
-                  <td>Skills used + review confirmed</td>
-                  <td><span class="sds-tag sds-tag--neutral">Template field in PR</span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="callout">
-            <strong>Why Three Specific Questions Instead of "Review and Approve"</strong>
-            <p>The human sign-off asks: 1) Does this work at mobile width? 2) Do error/edge states make sense? 3) Does it meet disclosure/regulatory requirements? Specific questions get real answers. "Review and approve" gets rubber stamps.</p>
-          </div>
-        </div>
-
-        <div class="section-divider"></div>
-
-        <!-- ═══════════════════════════════════════ -->
-        <!-- PM COLLABORATION -->
-        <!-- ═══════════════════════════════════════ -->
-        <div class="section" id="pm">
-          <h2>Product Management Collaboration</h2>
-          <p class="section-desc">Five specific ways the PM-design dynamic changes with code-first workflows — and how to navigate each.</p>
-
-          <div class="grid-2">
-            <div class="card">
-              <h3>PRD Quality Becomes Instantly Visible</h3>
-              <p>A vague PRD produces a vague prototype in minutes — making ambiguity instantly visible. The <code>read-filter-prd</code> skill extracts UI/UX requirements into a structured brief. Gaps surface in minutes instead of days.</p>
-            </div>
-            <div class="card">
-              <h3>PMs See Working Prototypes Earlier</h3>
-              <p>PMs interact with working prototypes within the first few days. Feedback becomes "I tried this on mobile and it didn't work" instead of "I think this might be confusing."</p>
-            </div>
-            <div class="card">
-              <h3>Requirements Traceability</h3>
-              <p>Trace from PRD requirement to design decision to prototype to production. Every decision in the chain is documented and auditable.</p>
-            </div>
-            <div class="card">
-              <h3>Acceptance Criteria Validation</h3>
-              <p>PMs validate AC against working prototypes immediately instead of weeks later in QA. Catches "design doesn't do what we agreed" before engineering begins.</p>
-            </div>
-          </div>
-
-          <div class="callout callout--green" style="margin-top: var(--sds-space-400);">
-            <strong>PMF Team Workflow: Hypothesis to Testable Prototype in 1-2 Days</strong>
-            <p>PM drafts hypothesis → PM and designer run <code>challenge-hypothesis</code> together → refine in real-time → designer generates prototype (30-60 min) → PM validates against AC → team tests with users → synthesize → next hypothesis.</p>
-          </div>
-
-          <h3 style="margin: var(--sds-space-600) 0 var(--sds-space-400); font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold);">PM Skills</h3>
-
-          <div class="sds-table-container">
-            <table class="sds-table">
-              <thead>
-                <tr>
-                  <th>Skill</th>
-                  <th>What It Does</th>
-                  <th>Owner</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>write-prd</strong></td>
-                  <td>Structures PRD with explicit sections for user problem, constraints, AC, out-of-scope</td>
-                  <td>Product ops / central team</td>
-                </tr>
-                <tr>
-                  <td><strong>challenge-hypothesis</strong></td>
-                  <td>Shared with design — forces problem validation</td>
-                  <td>Central team</td>
-                </tr>
-                <tr>
-                  <td><strong>validate-acceptance-criteria</strong></td>
-                  <td>Checks prototype against PM's acceptance criteria</td>
-                  <td>Central team</td>
-                </tr>
-                <tr>
-                  <td><strong>competitive-analysis</strong></td>
-                  <td>Structures competitive research into actionable design inputs</td>
-                  <td>Product ops</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="callout callout--red">
-            <strong>Boundary: PMs Should Not Generate UI Prototypes</strong>
-            <p>The design org maintains ownership of design decisions. If PMs generate their own prototypes, you get two versions of the truth and a political problem.</p>
-          </div>
-        </div>
-
-        <div class="section-divider"></div>
-
-        <!-- ═══════════════════════════════════════ -->
-        <!-- ENGINEERING ALIGNMENT -->
-        <!-- ═══════════════════════════════════════ -->
-        <div class="section" id="engineering">
-          <h2>Engineering Alignment</h2>
-          <p class="section-desc">If design outputs code prototypes but engineering doesn't use the same Foundation skill, you've moved the drift gap rather than eliminating it.</p>
-
-          <div class="callout">
-            <strong>The Unified Foundation Skill</strong>
-            <p>The Foundation skill is not a "design skill." It's a UI standards skill for everyone who generates UI code. When an engineer asks Claude to "add a filter dropdown," the Foundation skill loads and the component uses your tokens, conventions, and accessibility requirements. One design system, both disciplines.</p>
-          </div>
-
-          <h3 style="margin: var(--sds-space-600) 0 var(--sds-space-400); font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold);">Engineering-Side Hooks</h3>
-
-          <div class="sds-table-container">
-            <table class="sds-table">
-              <thead>
-                <tr>
-                  <th>Hook</th>
-                  <th>Trigger</th>
-                  <th>What It Does</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Token lint</strong></td>
-                  <td>After every CSS/style edit</td>
-                  <td>Validates values resolve to design tokens</td>
-                </tr>
-                <tr>
-                  <td><strong>Accessibility scan</strong></td>
-                  <td>Before PR creation</td>
-                  <td>Runs axe-core. Blocks PR on violations</td>
-                </tr>
-                <tr>
-                  <td><strong>Format enforcement</strong></td>
-                  <td>After every file edit</td>
-                  <td>Runs Prettier/ESLint</td>
-                </tr>
-                <tr>
-                  <td><strong>Bundle size check</strong></td>
-                  <td>Before PR creation</td>
-                  <td>Warns if component exceeds threshold</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <h3 style="margin: var(--sds-space-600) 0 var(--sds-space-400); font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold);">Cross-Functional Pipeline (Enterprise LOBs)</h3>
-
-          <div class="pipeline">
-            <div class="pipeline-stage">
-              <div class="pipeline-dot-col"><div class="pipeline-dot"></div><div class="pipeline-line"></div></div>
-              <div class="pipeline-content">
-                <strong>Designer generates prototype</strong>
-                <p>Foundation skill active. Runs design-review and design-handoff with requirements traceability.</p>
-              </div>
-            </div>
-            <div class="pipeline-stage">
-              <div class="pipeline-dot-col"><div class="pipeline-dot"></div><div class="pipeline-line"></div></div>
-              <div class="pipeline-content">
-                <strong>PM validates against acceptance criteria</strong>
-                <p>Reviews working prototype against AC. Creates PR in feature branch.</p>
-              </div>
-            </div>
-            <div class="pipeline-stage">
-              <div class="pipeline-dot-col"><div class="pipeline-dot"></div><div class="pipeline-line"></div></div>
-              <div class="pipeline-content">
-                <strong>Engineer refactors for production</strong>
-                <p>Foundation skill active. Runs component-qa and design-review to confirm no drift from prototype intent.</p>
-              </div>
-            </div>
-            <div class="pipeline-stage">
-              <div class="pipeline-dot-col"><div class="pipeline-dot"></div></div>
-              <div class="pipeline-content">
-                <strong>CI/CD validates and merges</strong>
-                <p>Token-compliance lint, accessibility audit, visual regression. Blocks merge on failure.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-divider"></div>
-
-        <!-- ═══════════════════════════════════════ -->
-        <!-- GOVERNANCE MODEL -->
-        <!-- ═══════════════════════════════════════ -->
-        <div class="section" id="governance">
-          <h2>Governance Model</h2>
-          <p class="section-desc">Hybrid with a strong center. Purely federated governance has worked at exactly zero organizations. The central team owns the core; embedded teams extend it.</p>
-
-          <div class="callout callout--purple">
-            <strong>Core Principle</strong>
-            <p>LOB skills can add requirements. They cannot remove or contradict foundation requirements. The hierarchy mirrors token architecture: global &rarr; semantic &rarr; component.</p>
-          </div>
-
-          <div class="code-block">
-<span class="code-keyword">Foundation</span> <span class="code-comment">(org-wide, locked)</span>
-  <span class="code-arrow">&rarr;</span> <span class="code-keyword">Platform Extension</span> <span class="code-comment">(product-area-specific, reviewed)</span>
-    <span class="code-arrow">&rarr;</span> <span class="code-keyword">LOB Extension</span> <span class="code-comment">(team-specific, self-governed in Explore)</span>
-          </div>
-        </div>
-
-        <!-- ═══════════════════════════════════════ -->
-        <!-- STARTER KIT -->
-        <!-- ═══════════════════════════════════════ -->
-        <div class="section" id="starterkit">
-          <h2>The Starter Kit</h2>
-          <p class="section-desc">What a new team receives on day one. Every skill has been reviewed for compatibility, tested against actual patterns, and approved for your regulatory context.</p>
-
-          <div class="sds-table-container">
-            <table class="sds-table">
-              <thead>
-                <tr>
-                  <th>Component</th>
-                  <th>Purpose</th>
-                  <th>Customizable?</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Foundation skill</strong></td>
-                  <td>Org design language</td>
-                  <td><span class="sds-tag sds-tag--red">Locked</span></td>
-                </tr>
-                <tr>
-                  <td><strong>CLAUDE.md template</strong></td>
-                  <td>Project constitution</td>
-                  <td><span class="sds-tag sds-tag--yellow">Partial</span></td>
-                </tr>
-                <tr>
-                  <td><strong>generate-component</strong></td>
-                  <td>Creates components using your design system</td>
-                  <td><span class="sds-tag sds-tag--red">Locked</span></td>
-                </tr>
-                <tr>
-                  <td><strong>design-review</strong></td>
-                  <td>Evaluates against principles + accessibility</td>
-                  <td><span class="sds-tag sds-tag--red">Locked</span></td>
-                </tr>
-                <tr>
-                  <td><strong>design-handoff</strong></td>
-                  <td>Generates spec packages with traceability</td>
-                  <td><span class="sds-tag sds-tag--yellow">Partial</span></td>
-                </tr>
-                <tr>
-                  <td><strong>challenge-hypothesis</strong></td>
-                  <td>Problem validation before prototyping</td>
-                  <td><span class="sds-tag sds-tag--red">Locked</span></td>
-                </tr>
-                <tr>
-                  <td><strong>Onboarding guide</strong></td>
-                  <td>Installation, first 5 prompts, exercises</td>
-                  <td><span class="sds-tag sds-tag--red">Locked</span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <h3 style="margin: var(--sds-space-600) 0 var(--sds-space-400); font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold);">Update Triggers &amp; Response Times</h3>
-
-          <div class="sds-table-container">
-            <table class="sds-table">
-              <thead>
-                <tr>
-                  <th>Trigger</th>
-                  <th>Response</th>
-                  <th>SLA</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Design system token change</strong></td>
-                  <td>Update Foundation skill, re-run tests</td>
-                  <td>5 business days</td>
-                </tr>
-                <tr>
-                  <td><strong>New component pattern</strong></td>
-                  <td>Add to Foundation with examples, add test case</td>
-                  <td>10 business days</td>
-                </tr>
-                <tr>
-                  <td><strong>Claude model update</strong></td>
-                  <td>Re-run test suite, patch if failures</td>
-                  <td>5 days after detection</td>
-                </tr>
-                <tr>
-                  <td><strong>Team feedback (consistent failure)</strong></td>
-                  <td>Investigate, reproduce, patch</td>
-                  <td>10 business days</td>
-                </tr>
-                <tr>
-                  <td><strong>Quarterly review</strong></td>
-                  <td>Full test suite, stale skill ID, usage analytics</td>
-                  <td>Scheduled</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="section-divider"></div>
-
-        <!-- ═══════════════════════════════════════ -->
-        <!-- STAFFING -->
-        <!-- ═══════════════════════════════════════ -->
-        <div class="section" id="staffing">
-          <h2>Staffing &amp; Investment</h2>
-          <p class="section-desc">The Foundation skill is a product, not a document. It has users, a feedback loop, a release cycle, and dependencies on external model behavior.</p>
-
-          <div class="stat-row">
-            <div class="sds-stat-card">
-              <div class="stat-label">Year 1 Staffing</div>
-              <div class="stat-value">1.5-2</div>
-              <div class="stat-detail">FTEs (not 0.5 FTE)</div>
-            </div>
-            <div class="sds-stat-card">
-              <div class="stat-label">Skill Author</div>
-              <div class="stat-value">1 FTE</div>
-              <div class="stat-detail">Foundation + starter kit + tests</div>
-            </div>
-            <div class="sds-stat-card">
-              <div class="stat-label">Governance Lead</div>
-              <div class="stat-value">0.5-1</div>
-              <div class="stat-detail">FTE for metrics, onboarding, audits</div>
-            </div>
-          </div>
-
-          <div class="callout">
-            <strong>Frame for Leadership</strong>
-            <p>This is design infrastructure investment, equivalent to design systems engineering. The Foundation skill is to your Claude workflow what the component library is to your Figma workflow. Can be embedded within existing DesignOps or design-systems roles — it does need named responsibility with dedicated capacity.</p>
-          </div>
-        </div>
-
-        <div class="section-divider"></div>
-
-        <!-- ═══════════════════════════════════════ -->
-        <!-- RISK ANALYSIS -->
-        <!-- ═══════════════════════════════════════ -->
-        <div class="section" id="risks">
-          <h2>Comprehensive Risk Analysis</h2>
-          <p class="section-desc">Five risk categories with specific mitigations. Likelihood and impact assessed honestly — no sugarcoating.</p>
-
-          <!-- Adoption -->
-          <h3 style="margin-bottom: var(--sds-space-400); font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold);">Adoption Risks</h3>
-
-          <div class="risk-card">
-            <div class="risk-card-header">
-              <h4>Designers don't adopt — identity shift too threatening</h4>
-              <span class="sds-tag sds-tag--red">High Likelihood</span>
-              <span class="sds-tag sds-tag--red">High Impact</span>
-            </div>
-            <p>Not a training problem. "Designer" has meant "person who creates visual artifacts in Figma" for a decade. Code-first changes what designer means. That's an identity shift.</p>
-            <ul>
-              <li>Phase 1 introduces Claude as thinking partner before changing creation workflow</li>
-              <li>Update evaluation criteria proactively: judgment quality, articulation, skill authoring, collaboration</li>
-              <li>Create space for resistance without judgment — "this feels threatening" is legitimate</li>
-              <li>Elevate early adopters as proof points; peers succeeding is more convincing than mandates</li>
-            </ul>
-          </div>
-
-          <div class="risk-card">
-            <div class="risk-card-header">
-              <h4>Engineering ignores prototypes and re-implements from scratch</h4>
-              <span class="sds-tag sds-tag--yellow">Medium-High</span>
-              <span class="sds-tag sds-tag--red">High Impact</span>
-            </div>
-            <p>Eliminates the handoff speed gain entirely.</p>
-            <ul>
-              <li>Co-author Foundation skill with engineering — if they see their standards, they trust the output</li>
-              <li>Position as "living design proposals, not production code"</li>
-              <li>Joint pilot: engineer works with designer's prototype on a real feature</li>
-            </ul>
-          </div>
-
-          <div class="risk-card">
-            <div class="risk-card-header">
-              <h4>Shadow AI persists</h4>
-              <span class="sds-tag sds-tag--red">High Likelihood</span>
-              <span class="sds-tag sds-tag--yellow">Medium Impact</span>
-            </div>
-            <p>High if the org path feels slower. Ungoverned data exposure.</p>
-            <ul>
-              <li>Make the org path genuinely better, not just more governed</li>
-              <li>Don't over-restrict Explore Mode — creative freedom with a quality floor</li>
-              <li>If detected, treat as a product problem first, not a compliance problem</li>
-            </ul>
-          </div>
-
-          <!-- Quality -->
-          <h3 style="margin: var(--sds-space-600) 0 var(--sds-space-400); font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold);">Quality Risks</h3>
-
-          <div class="risk-card">
-            <div class="risk-card-header">
-              <h4>Automated checks create false confidence</h4>
-              <span class="sds-tag sds-tag--yellow">Medium</span>
-            </div>
-            <p>Axe-core catches ~30-40% of accessibility issues. The machine-detectable ones. Not confusing tab order or misleading focus management.</p>
-            <ul>
-              <li>Document explicitly: "Automated checks are a floor, not a ceiling"</li>
-              <li>Human sign-off is not optional even when all automated checks pass</li>
-              <li>Periodic manual accessibility audits compare findings to automated coverage</li>
-            </ul>
-          </div>
-
-          <div class="risk-card">
-            <div class="risk-card-header">
-              <h4>Output passes every check but fails users</h4>
-              <span class="sds-tag sds-tag--yellow">Medium</span>
-            </div>
-            <p>Technically compliant but confusing interaction patterns. Automated checks can't catch this.</p>
-            <ul>
-              <li>This is why <code>challenge-hypothesis</code> and user testing exist</li>
-              <li>Automated checks validate compliance; user testing validates utility</li>
-              <li>Faster building means more time available for testing — if teams don't skip it</li>
-            </ul>
-          </div>
-
-          <!-- Platform -->
-          <h3 style="margin: var(--sds-space-600) 0 var(--sds-space-400); font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold);">Platform &amp; Vendor Risks</h3>
-
-          <div class="grid-2">
-            <div class="card">
-              <h3>Pricing Changes</h3>
-              <p>Track per-team consumption monthly. Set usage caps. SKILL.md format is portable to Cursor, Codex, Gemini CLI. <strong>You're not locked in.</strong></p>
-            </div>
-            <div class="card">
-              <h3>Model Behavior Changes</h3>
-              <p>Test suite is the regression detector. Run after known model updates. Subscribe to Anthropic's changelog. Document workarounds immediately.</p>
-            </div>
-            <div class="card">
-              <h3>Key Person Leaves</h3>
-              <p>Every skill has owner + deputy. Skills must include a "Design Rationale" section explaining <em>why</em> rules exist. Ownership transfer is explicit before departure.</p>
-            </div>
-            <div class="card">
-              <h3>Governance Becomes Obsolete</h3>
-              <p>Invest heavily in design knowledge (durable). Invest lightly in governance tooling (volatile). A spreadsheet for the registry is fine.</p>
-            </div>
-          </div>
-
-          <!-- Cultural -->
-          <h3 style="margin: var(--sds-space-600) 0 var(--sds-space-400); font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold);">Cultural &amp; Organizational Risks</h3>
-
-          <div class="callout callout--yellow">
-            <strong>Workforce Implications</strong>
-            <p>If designers generate working prototypes, what happens to junior front-end roles focused on translating mockups? Don't pretend it won't change the workforce. Commit to assessing implications at the 6-month milestone. Monitor role satisfaction and workload quarterly.</p>
-          </div>
-
-          <div class="callout callout--yellow">
-            <strong>Is the Strategy Worth It If Claude's Design Output Doesn't Materially Improve?</strong>
-            <p>Yes — but only if expectations were set correctly. The value is in automated compliance, handoff elimination, faster variant testing, and reusable encoded knowledge. NOT in replacing designer judgment on visual quality.</p>
-          </div>
-        </div>
-
-        <div class="section-divider"></div>
-
-        <!-- ═══════════════════════════════════════ -->
-        <!-- IMPLEMENTATION PLAN -->
-        <!-- ═══════════════════════════════════════ -->
-        <div class="section" id="implementation">
-          <h2>Implementation Plan</h2>
-          <p class="section-desc">A 16-week rollout from governance infrastructure to org-wide adoption, with a maturity phase at months 4-6.</p>
-
-          <div class="flow-strip">
-            <div class="flow-step" style="background: var(--sds-color-warm-gray-050);">
-              <div class="step-num">Phase 0</div>
-              <div class="step-name">Governance Infrastructure</div>
-              <div class="step-time">Weeks 1-2</div>
-            </div>
-            <div class="flow-step">
-              <div class="step-num">Phase 1</div>
-              <div class="step-name">Foundation + Starter Kit</div>
-              <div class="step-time">Weeks 2-4</div>
-            </div>
-            <div class="flow-step">
-              <div class="step-num">Phase 2</div>
-              <div class="step-name">Pilot</div>
-              <div class="step-time">Weeks 4-8</div>
-            </div>
-            <div class="flow-step">
-              <div class="step-num">Phase 3</div>
-              <div class="step-name">Expand</div>
-              <div class="step-time">Weeks 8-12</div>
-            </div>
-            <div class="flow-step" style="background: var(--sds-color-blue-050);">
-              <div class="step-num">Phase 4</div>
-              <div class="step-name">Scale + Measure</div>
-              <div class="step-time">Weeks 12-16</div>
-            </div>
-            <div class="flow-step" style="background: var(--sds-color-green-025);">
-              <div class="step-num">Phase 5</div>
-              <div class="step-name">Mature</div>
-              <div class="step-time">Months 4-6</div>
-            </div>
-          </div>
-
-          <div class="card">
-            <h3>Phase 0: Governance Infrastructure (Weeks 1-2)</h3>
-            <ul>
-              <li>Assign central team ownership (Foundation skill author, governance lead)</li>
-              <li>Create central skills repository (git)</li>
-              <li>Create Approved Skill Registry (spreadsheet)</li>
-              <li>Configure Enterprise plan (managed settings, compliance API)</li>
-              <li>Interview 3-4 PMs and engineering leads for cross-functional temperature check</li>
-            </ul>
-          </div>
-
-          <div class="card">
-            <h3>Phase 1: Foundation + Starter Kit (Weeks 2-4)</h3>
-            <ul>
-              <li>Author Foundation skill (co-authored with engineering)</li>
-              <li>Author CLAUDE.md template and starter kit skills</li>
-              <li>Build test suite (10-15 scenarios)</li>
-              <li>Build first-week onboarding module</li>
-              <li>Update designer evaluation rubrics</li>
-            </ul>
-          </div>
-
-          <div class="card">
-            <h3>Phase 2: Pilot (Weeks 4-8)</h3>
-            <ul>
-              <li>Recruit one scrappy LOB team (Explore Mode) and one enterprise LOB team (Ship Mode)</li>
-              <li>Include one PM per pilot team</li>
-              <li>Teams begin Phase 1 of practice transition</li>
-              <li>PM tests <code>read-filter-prd</code> on a real PRD — debrief on usefulness</li>
-              <li>Collect weekly feedback; iterate Foundation skill (expect 2-3 versions)</li>
-            </ul>
-          </div>
-
-          <div class="card">
-            <h3>Phase 3: Expand (Weeks 8-12)</h3>
-            <ul>
-              <li>Roll out starter kit to all willing teams</li>
-              <li>Scrappy LOBs begin code-first for new features</li>
-              <li>Enterprise LOBs begin Ship Mode pipeline</li>
-              <li>Engineering teams adopt shared CLAUDE.md and Foundation skill</li>
-              <li>Set up CI/CD hooks; build <code>validate-acceptance-criteria</code> skill</li>
-            </ul>
-          </div>
-
-          <div class="grid-2">
-            <div class="card">
-              <h3>Phase 4: Scale + Measure (Weeks 12-16)</h3>
-              <ul>
-                <li>All teams have starter kit installed</li>
-                <li>Enterprise/scrappy configuration guides published</li>
-                <li>Quarterly review cadence established</li>
-                <li>Metrics tracking begins</li>
-              </ul>
-            </div>
-            <div class="card">
-              <h3>Phase 5: Mature (Months 4-6)</h3>
-              <ul>
-                <li>6-month workforce assessment</li>
-                <li>Cross-LOB consistency review</li>
-                <li>Foundation skill major version</li>
-                <li>Evaluate advanced capabilities</li>
-              </ul>
-            </div>
-          </div>
-
-          <h3 style="margin: var(--sds-space-600) 0 var(--sds-space-400); font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold);">Key Metrics</h3>
-
-          <div class="grid-3">
-            <div class="card" style="text-align: center;">
-              <span class="material-symbols-outlined" style="color: var(--sds-interactive-primary); font-size: 28px; margin-bottom: var(--sds-space-200);">trending_up</span>
-              <h3 style="font-size: var(--sds-type-body);">Practice Adoption</h3>
-              <p style="font-size: var(--sds-type-caption);">% new features starting in Claude Code</p>
-            </div>
-            <div class="card" style="text-align: center;">
-              <span class="material-symbols-outlined" style="color: var(--sds-interactive-primary); font-size: 28px; margin-bottom: var(--sds-space-200);">timer</span>
-              <h3 style="font-size: var(--sds-type-body);">Handoff Time</h3>
-              <p style="font-size: var(--sds-type-caption);">Design-ready to engineering-started</p>
-            </div>
-            <div class="card" style="text-align: center;">
-              <span class="material-symbols-outlined" style="color: var(--sds-interactive-primary); font-size: 28px; margin-bottom: var(--sds-space-200);">check_circle</span>
-              <h3 style="font-size: var(--sds-type-body);">First-Pass Rate</h3>
-              <p style="font-size: var(--sds-type-caption);">Automated check pass rate</p>
-            </div>
-            <div class="card" style="text-align: center;">
-              <span class="material-symbols-outlined" style="color: var(--sds-interactive-primary); font-size: 28px; margin-bottom: var(--sds-space-200);">sync_problem</span>
-              <h3 style="font-size: var(--sds-type-body);">Rework Rate</h3>
-              <p style="font-size: var(--sds-type-caption);">Intent-to-implementation drift</p>
-            </div>
-            <div class="card" style="text-align: center;">
-              <span class="material-symbols-outlined" style="color: var(--sds-interactive-primary); font-size: 28px; margin-bottom: var(--sds-space-200);">extension</span>
-              <h3 style="font-size: var(--sds-type-body);">Skill Usage</h3>
-              <p style="font-size: var(--sds-type-caption);">Usage frequency and staleness</p>
-            </div>
-            <div class="card" style="text-align: center;">
-              <span class="material-symbols-outlined" style="color: var(--sds-interactive-primary); font-size: 28px; margin-bottom: var(--sds-space-200);">visibility_off</span>
-              <h3 style="font-size: var(--sds-type-body);">Shadow AI</h3>
-              <p style="font-size: var(--sds-type-caption);">Ungoverned usage incidents</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-divider"></div>
-
-        <!-- ═══════════════════════════════════════ -->
-        <!-- STAKEHOLDER PITCHES -->
-        <!-- ═══════════════════════════════════════ -->
-        <div class="section" id="pitches">
-          <h2>Stakeholder Pitches</h2>
-          <p class="section-desc">Ready-to-use messaging for each audience. Tailored to what each stakeholder cares about most.</p>
-
-          <div class="pitch-card">
-            <div class="pitch-card-header">
-              <div class="pitch-avatar" style="background: var(--sds-color-blue-750);">
-                <span class="material-symbols-outlined">stars</span>
-              </div>
-              <div>
-                <h4>VP / CDO</h4>
-                <span>Strategic value, investment ask, timeline</span>
-              </div>
-            </div>
-            <div class="pitch-card-body">
-              <blockquote>"We're shifting our design practice from Figma-first to code-first — not because Figma is bad, but because in a regulated industry, a working prototype that can be automatically tested for compliance is a fundamentally stronger artifact than a static mockup. For our PMF teams, this means testing 2-3x more hypotheses per cycle. For our enterprise teams, it means automated compliance checking plus a documented audit trail. The investment is 1.5-2 FTEs, with first value in 4-6 weeks and org-wide adoption in 16 weeks."</blockquote>
-            </div>
-          </div>
-
-          <div class="pitch-card">
-            <div class="pitch-card-header">
-              <div class="pitch-avatar" style="background: var(--sds-color-green-500);">
-                <span class="material-symbols-outlined">inventory</span>
-              </div>
-              <div>
-                <h4>Product Management Partners</h4>
-                <span>Workflow impact, faster feedback, PMF acceleration</span>
-              </div>
-            </div>
-            <div class="pitch-card-body">
-              <blockquote>"We're changing two things that directly affect your workflow. First, when you share a PRD with design, we'll use a tool that extracts UI/UX requirements into a structured brief that we review together. Gaps surface in minutes instead of days. Second, instead of reviewing static Figma mockups, you'll interact with working prototypes. Feedback becomes 'I tried this and it didn't work' instead of 'I think this might be confusing.' For PMF teams, hypothesis to testable prototype in 1-2 days instead of 1-2 weeks."</blockquote>
-            </div>
-          </div>
-
-          <div class="pitch-card">
-            <div class="pitch-card-header">
-              <div class="pitch-avatar" style="background: var(--sds-color-purple-500);">
-                <span class="material-symbols-outlined">terminal</span>
-              </div>
-              <div>
-                <h4>Engineering Partners</h4>
-                <span>What changes in what they receive from design</span>
-              </div>
-            </div>
-            <div class="pitch-card-body">
-              <blockquote>"Instead of a Figma link with redlines that you interpret into code, you'll receive a working prototype in a feature branch — built with your actual component library and design tokens, automatically validated for accessibility and compliance. Your job shifts from 'translate this picture into code' to 'refine this working implementation for production.' We've co-authored the foundation standards so the prototype follows your patterns."</blockquote>
-            </div>
-          </div>
-
-          <div class="pitch-card">
-            <div class="pitch-card-header">
-              <div class="pitch-avatar" style="background: var(--sds-color-warm-gray-800);">
-                <span class="material-symbols-outlined">gavel</span>
-              </div>
-              <div>
-                <h4>Compliance Partners</h4>
-                <span>Governance, audit trail, accountability</span>
-              </div>
-            </div>
-            <div class="pitch-card-body">
-              <blockquote>"Every AI-generated design artifact passes through a documented transition gate before it can ship. Automated accessibility validation, automated token-compliance checking, and a structured design review with human sign-off — all captured in PR history. We maintain a versioned registry of instruction sets with named owners and quarterly reviews. Claude accelerates our designers' work. It does not replace their judgment or accountability."</blockquote>
-            </div>
-          </div>
-        </div>
-
-        <!-- Footer -->
-        <div style="border-top: 1px solid var(--sds-border-default); padding-top: var(--sds-space-600); margin-top: var(--sds-space-800); text-align: center;">
-          <p style="font-size: var(--sds-type-caption); color: var(--sds-text-tertiary);">
-            The Definitive Strategy &mdash; Review quarterly against platform evolution, practice maturity, and organizational needs. &mdash; April 2026
-          </p>
-        </div>
-
-      </div><!-- /content-constraint -->
-    </main>
+<!-- Header -->
+<header class="sds-header">
+  <div class="sds-header-logo">
+    <span class="sds-header-logo-text">Running Claude in a Design Organization at Scale</span>
   </div>
+  <div class="sds-header-actions">
+    <span class="sds-header-meta">April 2026</span>
+  </div>
+</header>
 
-  <script>
-    const mainContent = document.getElementById('mainContent');
-    const scrollProgress = document.getElementById('scrollProgress');
-    const navItems = document.querySelectorAll('.sds-sidenav-item');
-    const sections = [];
+<!-- ============ APP BODY ============ -->
+<div class="app-body">
 
-    // Collect section IDs from nav items
-    navItems.forEach(item => {
-      const onclick = item.getAttribute('onclick');
-      if (onclick) {
-        const match = onclick.match(/scrollToSection\(event,\s*'([^']+)'\)/);
-        if (match) {
-          const el = document.getElementById(match[1]);
-          if (el) sections.push({ id: match[1], el, nav: item });
-        }
+  <!-- ============ SIDE NAVIGATION ============ -->
+  <nav class="sds-sidenav" aria-label="Report navigation">
+    <a class="sds-sidenav-item active" href="#overview" onclick="scrollToSection(event, 'overview')">
+      <span class="sds-sidenav-icon"><span class="material-symbols-outlined">dashboard</span></span>
+      <span>Executive Summary</span>
+    </a>
+    <a class="sds-sidenav-item" href="#transitions" onclick="scrollToSection(event, 'transitions')">
+      <span class="sds-sidenav-icon"><span class="material-symbols-outlined">swap_horiz</span></span>
+      <span>Three Transitions</span>
+    </a>
+
+    <div class="sds-sidenav-group-label">The Case</div>
+    <a class="sds-sidenav-item" href="#speed" onclick="scrollToSection(event, 'speed')">
+      <span class="sds-sidenav-icon"><span class="material-symbols-outlined">speed</span></span>
+      <span>Speed Argument</span>
+    </a>
+    <a class="sds-sidenav-item" href="#regulatory" onclick="scrollToSection(event, 'regulatory')">
+      <span class="sds-sidenav-icon"><span class="material-symbols-outlined">verified_user</span></span>
+      <span>Regulatory Argument</span>
+    </a>
+
+    <div class="sds-sidenav-group-label">Practice Model</div>
+    <a class="sds-sidenav-item" href="#practice" onclick="scrollToSection(event, 'practice')">
+      <span class="sds-sidenav-icon"><span class="material-symbols-outlined">code</span></span>
+      <span>Code-First Transition</span>
+    </a>
+    <a class="sds-sidenav-item" href="#modes" onclick="scrollToSection(event, 'modes')">
+      <span class="sds-sidenav-icon"><span class="material-symbols-outlined">tune</span></span>
+      <span>Explore / Ship Modes</span>
+    </a>
+    <a class="sds-sidenav-item" href="#gate" onclick="scrollToSection(event, 'gate')">
+      <span class="sds-sidenav-icon"><span class="material-symbols-outlined">fact_check</span></span>
+      <span>Transition Gate</span>
+    </a>
+
+    <div class="sds-sidenav-group-label">Cross-Functional</div>
+    <a class="sds-sidenav-item" href="#pm" onclick="scrollToSection(event, 'pm')">
+      <span class="sds-sidenav-icon"><span class="material-symbols-outlined">group</span></span>
+      <span>PM Collaboration</span>
+    </a>
+    <a class="sds-sidenav-item" href="#engineering" onclick="scrollToSection(event, 'engineering')">
+      <span class="sds-sidenav-icon"><span class="material-symbols-outlined">engineering</span></span>
+      <span>Engineering Alignment</span>
+    </a>
+
+    <div class="sds-sidenav-group-label">Governance</div>
+    <a class="sds-sidenav-item" href="#governance" onclick="scrollToSection(event, 'governance')">
+      <span class="sds-sidenav-icon"><span class="material-symbols-outlined">admin_panel_settings</span></span>
+      <span>Governance Model</span>
+    </a>
+    <a class="sds-sidenav-item" href="#starterkit" onclick="scrollToSection(event, 'starterkit')">
+      <span class="sds-sidenav-icon"><span class="material-symbols-outlined">inventory_2</span></span>
+      <span>Starter Kit</span>
+    </a>
+    <a class="sds-sidenav-item" href="#staffing" onclick="scrollToSection(event, 'staffing')">
+      <span class="sds-sidenav-icon"><span class="material-symbols-outlined">people</span></span>
+      <span>Staffing</span>
+    </a>
+
+    <div class="sds-sidenav-group-label">Risk &amp; Readiness</div>
+    <a class="sds-sidenav-item" href="#risks" onclick="scrollToSection(event, 'risks')">
+      <span class="sds-sidenav-icon"><span class="material-symbols-outlined">warning</span></span>
+      <span>Risk Analysis</span>
+    </a>
+    <a class="sds-sidenav-item" href="#implementation" onclick="scrollToSection(event, 'implementation')">
+      <span class="sds-sidenav-icon"><span class="material-symbols-outlined">rocket_launch</span></span>
+      <span>Implementation Plan</span>
+    </a>
+    <a class="sds-sidenav-item" href="#pitches" onclick="scrollToSection(event, 'pitches')">
+      <span class="sds-sidenav-icon"><span class="material-symbols-outlined">campaign</span></span>
+      <span>Stakeholder Pitches</span>
+    </a>
+  </nav>
+
+  <!-- ============ MAIN CONTENT ============ -->
+  <main class="main-content" id="main-content">
+
+    <!-- Scroll progress -->
+    <div class="scroll-progress"><div class="scroll-progress-track"><div class="scroll-progress-bar" id="progress-bar"></div></div></div>
+
+    <!-- Page Header -->
+    <div class="page-header" id="overview">
+      <h1>Running Claude in a Design Organization at Scale</h1>
+      <p class="page-desc">A strategy for transitioning a large, regulated design organization from Figma-centric to code-first practice &mdash; with governance, cross-functional alignment, and startup speed where it counts.</p>
+      <div class="page-header-tags">
+        <span class="sds-tag sds-tag--info">Code-First Design</span>
+        <span class="sds-tag sds-tag--success">Regulated Industry</span>
+        <span class="sds-tag sds-tag--purple">Two-Mode Operating Model</span>
+        <span class="sds-tag sds-tag--neutral">16-Week Rollout</span>
+      </div>
+    </div>
+
+    <!-- Key metrics -->
+    <div class="stat-row">
+      <div class="sds-stat-card"><div class="sds-stat-card__label">Speed Gain</div><div class="sds-stat-card__value">2-3x</div><div class="sds-stat-card__detail">End-to-end delivery</div></div>
+      <div class="sds-stat-card"><div class="sds-stat-card__label">Handoff Savings</div><div class="sds-stat-card__value">3-7d</div><div class="sds-stat-card__detail">Per feature</div></div>
+      <div class="sds-stat-card"><div class="sds-stat-card__label">Variant Testing</div><div class="sds-stat-card__value">2-3x</div><div class="sds-stat-card__detail">More per cycle</div></div>
+      <div class="sds-stat-card"><div class="sds-stat-card__label">Hypothesis &rarr; Prototype</div><div class="sds-stat-card__value">1-2d</div><div class="sds-stat-card__detail">Down from 1-2 weeks</div></div>
+      <div class="sds-stat-card"><div class="sds-stat-card__label">Investment</div><div class="sds-stat-card__value">1.5-2</div><div class="sds-stat-card__detail">FTEs (Year 1)</div></div>
+    </div>
+
+    <!-- ====== THREE TRANSITIONS ====== -->
+    <section id="transitions" class="section">
+      <h2>Three Simultaneous Transitions</h2>
+      <p class="section-desc">This strategy navigates three interrelated shifts happening at the same time. Success requires addressing all three.</p>
+
+      <div class="grid-3">
+        <div class="card">
+          <h3>Practice Transition</h3>
+          <p>From Figma-centric design to <strong>code-first design</strong>. The primary artifact becomes a working prototype &mdash; automatically testable for compliance, eliminating the design-to-engineering interpretation gap.</p>
+        </div>
+        <div class="card">
+          <h3>Operating Model Transition</h3>
+          <p>From uniform process to a <strong>two-mode model</strong>. Scrappy LOBs move at startup speed. Enterprise LOBs maintain audit-ready discipline. The foundation layer is shared; the operating weight varies.</p>
+        </div>
+        <div class="card">
+          <h3>Cross-Functional Transition</h3>
+          <p>From siloed handoffs to <strong>shared infrastructure</strong>. Design standards become ambient in the workspace. Every function that touches UI works from the same conventions.</p>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ====== SPEED ARGUMENT ====== -->
+    <section id="speed" class="section">
+      <h2>The Speed Argument</h2>
+      <p class="section-desc">Real gains are 2-3x for end-to-end feature delivery, concentrated in handoff and clarification. Not 10x.</p>
+
+      <div class="grid-2">
+        <div class="card" style="border-top: 3px solid var(--sds-color-green-400);">
+          <h3>Where Speed Gains Are Real</h3>
+          <ul>
+            <li><strong>Interpretation gap eliminated: 3-7 days per feature.</strong> The 15 Slack threads after every Figma handoff are answered by the prototype itself.</li>
+            <li><strong>Spec gap eliminated: 1-2 days per feature.</strong> The <code>design-handoff</code> skill follows a checklist, not memory.</li>
+            <li><strong>Rapid variant testing: 2-3x more variants.</strong> Two working prototypes in a single Claude session, tested the same day.</li>
+            <li><strong>Component reuse compounds.</strong> Every component starts from your design system's conventions automatically.</li>
+          </ul>
+        </div>
+        <div class="card" style="border-top: 3px solid var(--sds-color-yellow-200);">
+          <h3>Where Speed Claims Are Overstated</h3>
+          <ul>
+            <li><strong>"10x faster" is marketing.</strong> Real gains concentrate in handoff and clarification, not raw design production.</li>
+            <li><strong>First-time setup is slower.</strong> Learning curve takes 2-4 weeks before net positive. Pilot with adaptable designers.</li>
+            <li><strong>Speed only helps if production is the bottleneck.</strong> Audit the actual bottleneck per team before pitching Claude as the solution.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ====== REGULATORY ARGUMENT ====== -->
+    <section id="regulatory" class="section">
+      <h2>The Regulatory Argument</h2>
+      <p class="section-desc">In a regulated industry, automated-first quality assurance is fundamentally stronger than manual-only review.</p>
+
+      <div class="callout callout-green">
+        <strong>A code prototype can be automatically tested. A Figma mockup cannot.</strong>
+        <p>Accessibility validation, token compliance, keyboard navigation, semantic HTML, component API correctness &mdash; all automatically checkable on code. Every check runs on every commit. Violations are caught before human review, not during it.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="callout">
+          <strong>Eliminates Translation Drift</strong>
+          <p>The gap between "what the designer intended" and "what the engineer built" is the largest source of quality loss. When the designer's artifact IS code, that gap collapses.</p>
+        </div>
+        <div class="callout callout-purple">
+          <strong>Creates an Audit Trail</strong>
+          <p>Every production-bound component has documented evidence: which skills were active, what automated checks passed, which designer reviewed and approved, when.</p>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ====== PRACTICE TRANSITION ====== -->
+    <section id="practice" class="section">
+      <h2>The Practice Transition: Figma to Code-First</h2>
+      <p class="section-desc">Code-first means designers use Claude Code to generate working prototypes as the primary design artifact. It does NOT mean designers write production code or that Figma disappears.</p>
+
+      <div class="callout callout-yellow">
+        <strong>Critical Principle</strong>
+        <p>Think in Figma (or on paper, or a whiteboard). Build in Claude. Review in whatever medium serves the conversation. Code-first must not become code-only.</p>
+      </div>
+
+      <h3>Phased Transition</h3>
+
+      <div class="flow-strip">
+        <div class="flow-step">
+          <div class="step-num">Phase 1</div>
+          <div class="step-name">Parallel Practice</div>
+          <div class="step-time">Months 1-3</div>
+        </div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step">
+          <div class="step-num">Phase 2</div>
+          <div class="step-name">Code-First for New Work</div>
+          <div class="step-time">Months 3-6</div>
+        </div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step">
+          <div class="step-num">Phase 3</div>
+          <div class="step-name">Code-First as Default</div>
+          <div class="step-time">Months 6-12</div>
+        </div>
+      </div>
+
+      <div class="sds-table-container">
+        <table class="sds-table">
+          <thead>
+            <tr><th>Team Type</th><th>Phase 1</th><th>Phase 2</th><th>Phase 3</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Scrappy LOBs</td><td>Critique + specs + hypothesis challenge + sandbox</td><td>Code-first for new features</td><td>Code-first as default</td></tr>
+            <tr><td>Enterprise LOBs</td><td>Critique + specs + hypothesis challenge</td><td>Code-first with Ship Mode pipeline</td><td>Code-first for new; Figma for existing</td></tr>
+            <tr><td>Design Systems</td><td>Foundation skill authoring, starter kits</td><td>Refinement from pilot feedback</td><td>Ongoing maintenance</td></tr>
+            <tr><td>Research / Strategy</td><td>Critique + research synthesis skills</td><td>+ cross-functional skills</td><td>Same</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Phase 1 Use Cases</h3>
+        <ul>
+          <li><strong>Design critique:</strong> Screenshots of Figma work evaluated against principles and accessibility. Builds trust without changing workflow.</li>
+          <li><strong>Spec generation:</strong> After completing design in Figma, <code>design-handoff</code> skill generates spec packages. Immediate value to engineering.</li>
+          <li><strong>Hypothesis challenge:</strong> Forces problem validation before prototyping begins &mdash; what user problem, what evidence, what assumptions, what's the simplest testable version.</li>
+          <li><strong>Sandbox prototyping:</strong> Willing designers generate components using the Foundation skill. Sandbox repo, not production.</li>
+        </ul>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ====== TWO-MODE MODEL ====== -->
+    <section id="modes" class="section">
+      <h2>The Two-Mode Operating Model</h2>
+      <p class="section-desc">A shared quality floor with variable operating weight. The foundation is consistent &mdash; the speed varies by context.</p>
+
+      <div class="grid-2">
+        <div class="mode-card">
+          <div class="mode-card-header" style="background: var(--sds-status-success-bg);">
+            <span class="material-symbols-outlined" style="color: var(--sds-status-success-text); font-size: 22px; font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 22;">explore</span>
+            <h3>Explore Mode</h3>
+            <span class="sds-tag sds-tag--success">All Teams</span>
+          </div>
+          <div class="mode-card-body">
+            <ul>
+              <li><strong>Foundation skill:</strong> Always active (the quality floor)</li>
+              <li><strong>Starter kit skills:</strong> Available</li>
+              <li><strong>LOB extension skills:</strong> No registry approval needed</li>
+              <li><strong>Third-party / creative skills:</strong> Available (output cannot ship without transition)</li>
+              <li><strong>Review:</strong> Self-directed</li>
+              <li><strong>Only hard constraint:</strong> Foundation skill. Even in "move fast" mode, Claude uses your tokens, conventions, and accessibility baseline.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="mode-card">
+          <div class="mode-card-header" style="background: var(--sds-status-info-bg);">
+            <span class="material-symbols-outlined" style="color: var(--sds-interactive-primary); font-size: 22px; font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 22;">local_shipping</span>
+            <h3>Ship Mode</h3>
+            <span class="sds-tag sds-tag--info">Production</span>
+          </div>
+          <div class="mode-card-body">
+            <ul>
+              <li><strong>Only registry-approved skills</strong></li>
+              <li><strong>Mandatory review pipeline</strong></li>
+              <li><strong>Human sign-off required</strong></li>
+              <li><strong>AI disclosure in artifact metadata</strong></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== TRANSITION GATE ====== -->
+    <section id="gate" class="section">
+      <h2>The Transition Gate</h2>
+      <p class="section-desc">Six checks between Explore and production. Steps 1-3 are fully automated &mdash; strongest guardrails because they don't require willpower.</p>
+
+      <div class="sds-table-container">
+        <table class="sds-table">
+          <thead>
+            <tr><th>Check</th><th>Method</th><th>Enforcement</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Token compliance</td><td>Automated lint</td><td><span class="sds-tag sds-tag--success">CI/CD &mdash; blocks merge</span></td></tr>
+            <tr><td>Accessibility validation</td><td>Automated (axe-core)</td><td><span class="sds-tag sds-tag--success">CI/CD &mdash; blocks merge</span></td></tr>
+            <tr><td>Component API compliance</td><td>Automated lint</td><td><span class="sds-tag sds-tag--success">CI/CD &mdash; blocks merge</span></td></tr>
+            <tr><td>Design review skill</td><td>Run skill, attach to PR</td><td><span class="sds-tag sds-tag--info">Skill + designer</span></td></tr>
+            <tr><td>Human sign-off</td><td>3 specific questions</td><td><span class="sds-tag sds-tag--purple">Named individual</span></td></tr>
+            <tr><td>AI disclosure</td><td>Skills used + review confirmed</td><td><span class="sds-tag sds-tag--neutral">Template field in PR</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <strong>Why Three Specific Questions Instead of "Review and Approve"</strong>
+        <p>The human sign-off asks: 1) Does this work at mobile width? 2) Do error/edge states make sense? 3) Does it meet disclosure/regulatory requirements? Specific questions get real answers. "Review and approve" gets rubber stamps.</p>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ====== PM COLLABORATION ====== -->
+    <section id="pm" class="section">
+      <h2>Product Management Collaboration</h2>
+      <p class="section-desc">Five specific ways the PM-design dynamic changes with code-first workflows &mdash; and how to navigate each.</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>PRD Quality Becomes Instantly Visible</h3>
+          <p>A vague PRD produces a vague prototype in minutes &mdash; making ambiguity instantly visible. The <code>read-filter-prd</code> skill extracts UI/UX requirements into a structured brief. Gaps surface in minutes instead of days.</p>
+        </div>
+        <div class="card">
+          <h3>PMs See Working Prototypes Earlier</h3>
+          <p>PMs interact with working prototypes within the first few days. Feedback becomes "I tried this on mobile and it didn't work" instead of "I think this might be confusing."</p>
+        </div>
+        <div class="card">
+          <h3>Requirements Traceability</h3>
+          <p>Trace from PRD requirement to design decision to prototype to production. Every decision in the chain is documented and auditable.</p>
+        </div>
+        <div class="card">
+          <h3>Acceptance Criteria Validation</h3>
+          <p>PMs validate AC against working prototypes immediately instead of weeks later in QA. Catches "design doesn't do what we agreed" before engineering begins.</p>
+        </div>
+      </div>
+
+      <div class="callout callout-green">
+        <strong>PMF Team Workflow: Hypothesis to Testable Prototype in 1-2 Days</strong>
+        <p>PM drafts hypothesis &rarr; PM and designer run <code>challenge-hypothesis</code> together &rarr; refine in real-time &rarr; designer generates prototype (30-60 min) &rarr; PM validates against AC &rarr; team tests with users &rarr; synthesize &rarr; next hypothesis.</p>
+      </div>
+
+      <h3>PM Skills</h3>
+
+      <div class="sds-table-container">
+        <table class="sds-table">
+          <thead>
+            <tr><th>Skill</th><th>What It Does</th><th>Owner</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>write-prd</td><td>Structures PRD with explicit sections for user problem, constraints, AC, out-of-scope</td><td>Product ops / central team</td></tr>
+            <tr><td>challenge-hypothesis</td><td>Shared with design &mdash; forces problem validation</td><td>Central team</td></tr>
+            <tr><td>validate-acceptance-criteria</td><td>Checks prototype against PM's acceptance criteria</td><td>Central team</td></tr>
+            <tr><td>competitive-analysis</td><td>Structures competitive research into actionable design inputs</td><td>Product ops</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-red">
+        <strong>Boundary: PMs Should Not Generate UI Prototypes</strong>
+        <p>The design org maintains ownership of design decisions. If PMs generate their own prototypes, you get two versions of the truth and a political problem.</p>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ====== ENGINEERING ALIGNMENT ====== -->
+    <section id="engineering" class="section">
+      <h2>Engineering Alignment</h2>
+      <p class="section-desc">If design outputs code prototypes but engineering doesn't use the same Foundation skill, you've moved the drift gap rather than eliminating it.</p>
+
+      <div class="callout">
+        <strong>The Unified Foundation Skill</strong>
+        <p>The Foundation skill is not a "design skill." It's a UI standards skill for everyone who generates UI code. When an engineer asks Claude to "add a filter dropdown," the Foundation skill loads and the component uses your tokens, conventions, and accessibility requirements. One design system, both disciplines.</p>
+      </div>
+
+      <h3>Engineering-Side Hooks</h3>
+
+      <div class="sds-table-container">
+        <table class="sds-table">
+          <thead>
+            <tr><th>Hook</th><th>Trigger</th><th>What It Does</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Token lint</td><td>After every CSS/style edit</td><td>Validates values resolve to design tokens</td></tr>
+            <tr><td>Accessibility scan</td><td>Before PR creation</td><td>Runs axe-core. Blocks PR on violations</td></tr>
+            <tr><td>Format enforcement</td><td>After every file edit</td><td>Runs Prettier/ESLint</td></tr>
+            <tr><td>Bundle size check</td><td>Before PR creation</td><td>Warns if component exceeds threshold</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Cross-Functional Pipeline (Enterprise LOBs)</h3>
+
+      <div class="pipeline">
+        <div class="pipeline-stage">
+          <div class="pipeline-dot-col"><div class="pipeline-dot"></div><div class="pipeline-line"></div></div>
+          <div class="pipeline-content">
+            <strong>Designer generates prototype</strong>
+            <p>Foundation skill active. Runs design-review and design-handoff with requirements traceability.</p>
+          </div>
+        </div>
+        <div class="pipeline-stage">
+          <div class="pipeline-dot-col"><div class="pipeline-dot"></div><div class="pipeline-line"></div></div>
+          <div class="pipeline-content">
+            <strong>PM validates against acceptance criteria</strong>
+            <p>Reviews working prototype against AC. Creates PR in feature branch.</p>
+          </div>
+        </div>
+        <div class="pipeline-stage">
+          <div class="pipeline-dot-col"><div class="pipeline-dot"></div><div class="pipeline-line"></div></div>
+          <div class="pipeline-content">
+            <strong>Engineer refactors for production</strong>
+            <p>Foundation skill active. Runs component-qa and design-review to confirm no drift from prototype intent.</p>
+          </div>
+        </div>
+        <div class="pipeline-stage">
+          <div class="pipeline-dot-col"><div class="pipeline-dot"></div></div>
+          <div class="pipeline-content">
+            <strong>CI/CD validates and merges</strong>
+            <p>Token-compliance lint, accessibility audit, visual regression. Blocks merge on failure.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ====== GOVERNANCE MODEL ====== -->
+    <section id="governance" class="section">
+      <h2>Governance Model</h2>
+      <p class="section-desc">Hybrid with a strong center. Purely federated governance has worked at exactly zero organizations.</p>
+
+      <div class="callout callout-purple">
+        <strong>Core Principle</strong>
+        <p>LOB skills can add requirements. They cannot remove or contradict foundation requirements. The hierarchy mirrors token architecture: global &rarr; semantic &rarr; component.</p>
+      </div>
+
+      <div class="tree"><span class="hl">Foundation</span> (org-wide, locked)
+  &rarr; <span class="hl">Platform Extension</span> (product-area-specific, reviewed)
+    &rarr; <span class="hl">LOB Extension</span> (team-specific, self-governed in Explore)</div>
+    </section>
+
+    <!-- ====== STARTER KIT ====== -->
+    <section id="starterkit" class="section">
+      <h2>The Starter Kit</h2>
+      <p class="section-desc">What a new team receives on day one. Every skill has been reviewed for compatibility, tested against actual patterns, and approved for your regulatory context.</p>
+
+      <div class="sds-table-container">
+        <table class="sds-table">
+          <thead>
+            <tr><th>Component</th><th>Purpose</th><th>Customizable?</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Foundation skill</td><td>Org design language</td><td><span class="sds-tag sds-tag--error">Locked</span></td></tr>
+            <tr><td>CLAUDE.md template</td><td>Project constitution</td><td><span class="sds-tag sds-tag--warning">Partial</span></td></tr>
+            <tr><td>generate-component</td><td>Creates components using your design system</td><td><span class="sds-tag sds-tag--error">Locked</span></td></tr>
+            <tr><td>design-review</td><td>Evaluates against principles + accessibility</td><td><span class="sds-tag sds-tag--error">Locked</span></td></tr>
+            <tr><td>design-handoff</td><td>Generates spec packages with traceability</td><td><span class="sds-tag sds-tag--warning">Partial</span></td></tr>
+            <tr><td>challenge-hypothesis</td><td>Problem validation before prototyping</td><td><span class="sds-tag sds-tag--error">Locked</span></td></tr>
+            <tr><td>Onboarding guide</td><td>Installation, first 5 prompts, exercises</td><td><span class="sds-tag sds-tag--error">Locked</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Update Triggers &amp; Response Times</h3>
+
+      <div class="sds-table-container">
+        <table class="sds-table">
+          <thead>
+            <tr><th>Trigger</th><th>Response</th><th>SLA</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Design system token change</td><td>Update Foundation skill, re-run tests</td><td>5 business days</td></tr>
+            <tr><td>New component pattern</td><td>Add to Foundation with examples, add test case</td><td>10 business days</td></tr>
+            <tr><td>Claude model update</td><td>Re-run test suite, patch if failures</td><td>5 days after detection</td></tr>
+            <tr><td>Team feedback (consistent failure)</td><td>Investigate, reproduce, patch</td><td>10 business days</td></tr>
+            <tr><td>Quarterly review</td><td>Full test suite, stale skill ID, usage analytics</td><td>Scheduled</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ====== STAFFING ====== -->
+    <section id="staffing" class="section">
+      <h2>Staffing &amp; Investment</h2>
+      <p class="section-desc">The Foundation skill is a product, not a document. It has users, a feedback loop, a release cycle, and dependencies on external model behavior.</p>
+
+      <div class="stat-row">
+        <div class="sds-stat-card"><div class="sds-stat-card__label">Year 1 Staffing</div><div class="sds-stat-card__value">1.5-2</div><div class="sds-stat-card__detail">FTEs (not 0.5 FTE)</div></div>
+        <div class="sds-stat-card"><div class="sds-stat-card__label">Skill Author</div><div class="sds-stat-card__value">1 FTE</div><div class="sds-stat-card__detail">Foundation + starter kit + tests</div></div>
+        <div class="sds-stat-card"><div class="sds-stat-card__label">Governance Lead</div><div class="sds-stat-card__value">0.5-1</div><div class="sds-stat-card__detail">Metrics, onboarding, audits</div></div>
+      </div>
+
+      <div class="callout">
+        <strong>Frame for Leadership</strong>
+        <p>This is design infrastructure investment, equivalent to design systems engineering. The Foundation skill is to your Claude workflow what the component library is to your Figma workflow. Can be embedded within existing DesignOps or design-systems roles &mdash; it does need named responsibility with dedicated capacity.</p>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ====== RISK ANALYSIS ====== -->
+    <section id="risks" class="section">
+      <h2>Comprehensive Risk Analysis</h2>
+      <p class="section-desc">Five risk categories with specific mitigations. Likelihood and impact assessed honestly.</p>
+
+      <h3>Adoption Risks</h3>
+
+      <div class="risk-card">
+        <div class="risk-card-header">
+          <h4>Designers don't adopt &mdash; identity shift too threatening</h4>
+          <span class="sds-tag sds-tag--error">High Likelihood</span>
+          <span class="sds-tag sds-tag--error">High Impact</span>
+        </div>
+        <p>Not a training problem. "Designer" has meant "person who creates visual artifacts in Figma" for a decade. Code-first changes what designer means. That's an identity shift.</p>
+        <ul>
+          <li>Phase 1 introduces Claude as thinking partner before changing creation workflow</li>
+          <li>Update evaluation criteria proactively: judgment quality, articulation, skill authoring, collaboration</li>
+          <li>Create space for resistance without judgment &mdash; "this feels threatening" is legitimate</li>
+          <li>Elevate early adopters as proof points; peers succeeding is more convincing than mandates</li>
+        </ul>
+      </div>
+
+      <div class="risk-card">
+        <div class="risk-card-header">
+          <h4>Engineering ignores prototypes and re-implements from scratch</h4>
+          <span class="sds-tag sds-tag--warning">Medium-High</span>
+          <span class="sds-tag sds-tag--error">High Impact</span>
+        </div>
+        <p>Eliminates the handoff speed gain entirely.</p>
+        <ul>
+          <li>Co-author Foundation skill with engineering &mdash; if they see their standards, they trust the output</li>
+          <li>Position as "living design proposals, not production code"</li>
+          <li>Joint pilot: engineer works with designer's prototype on a real feature</li>
+        </ul>
+      </div>
+
+      <div class="risk-card">
+        <div class="risk-card-header">
+          <h4>Shadow AI persists</h4>
+          <span class="sds-tag sds-tag--error">High Likelihood</span>
+          <span class="sds-tag sds-tag--warning">Medium Impact</span>
+        </div>
+        <p>High if the org path feels slower. Ungoverned data exposure.</p>
+        <ul>
+          <li>Make the org path genuinely better, not just more governed</li>
+          <li>Don't over-restrict Explore Mode &mdash; creative freedom with a quality floor</li>
+          <li>If detected, treat as a product problem first, not a compliance problem</li>
+        </ul>
+      </div>
+
+      <h3>Quality Risks</h3>
+
+      <div class="risk-card">
+        <div class="risk-card-header">
+          <h4>Automated checks create false confidence</h4>
+          <span class="sds-tag sds-tag--warning">Medium</span>
+        </div>
+        <p>Axe-core catches ~30-40% of accessibility issues. The machine-detectable ones. Not confusing tab order or misleading focus management.</p>
+        <ul>
+          <li>Document explicitly: "Automated checks are a floor, not a ceiling"</li>
+          <li>Human sign-off is not optional even when all automated checks pass</li>
+          <li>Periodic manual accessibility audits compare findings to automated coverage</li>
+        </ul>
+      </div>
+
+      <div class="risk-card">
+        <div class="risk-card-header">
+          <h4>Output passes every check but fails users</h4>
+          <span class="sds-tag sds-tag--warning">Medium</span>
+        </div>
+        <p>Technically compliant but confusing interaction patterns. Automated checks can't catch this.</p>
+        <ul>
+          <li>This is why <code>challenge-hypothesis</code> and user testing exist</li>
+          <li>Automated checks validate compliance; user testing validates utility</li>
+          <li>Faster building means more time available for testing &mdash; if teams don't skip it</li>
+        </ul>
+      </div>
+
+      <h3>Platform &amp; Vendor Risks</h3>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Pricing Changes</h3>
+          <p>Track per-team consumption monthly. Set usage caps. SKILL.md format is portable to Cursor, Codex, Gemini CLI. <strong>You're not locked in.</strong></p>
+        </div>
+        <div class="card">
+          <h3>Model Behavior Changes</h3>
+          <p>Test suite is the regression detector. Run after known model updates. Subscribe to Anthropic's changelog. Document workarounds immediately.</p>
+        </div>
+        <div class="card">
+          <h3>Key Person Leaves</h3>
+          <p>Every skill has owner + deputy. Skills must include a "Design Rationale" section explaining <em>why</em> rules exist. Ownership transfer is explicit before departure.</p>
+        </div>
+        <div class="card">
+          <h3>Governance Becomes Obsolete</h3>
+          <p>Invest heavily in design knowledge (durable). Invest lightly in governance tooling (volatile). A spreadsheet for the registry is fine.</p>
+        </div>
+      </div>
+
+      <h3>Cultural &amp; Organizational Risks</h3>
+
+      <div class="callout callout-yellow">
+        <strong>Workforce Implications</strong>
+        <p>If designers generate working prototypes, what happens to junior front-end roles focused on translating mockups? Don't pretend it won't change the workforce. Commit to assessing implications at the 6-month milestone. Monitor role satisfaction and workload quarterly.</p>
+      </div>
+
+      <div class="callout callout-yellow">
+        <strong>Is the Strategy Worth It If Claude's Design Output Doesn't Materially Improve?</strong>
+        <p>Yes &mdash; but only if expectations were set correctly. The value is in automated compliance, handoff elimination, faster variant testing, and reusable encoded knowledge. NOT in replacing designer judgment on visual quality.</p>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ====== IMPLEMENTATION PLAN ====== -->
+    <section id="implementation" class="section">
+      <h2>Implementation Plan</h2>
+      <p class="section-desc">A 16-week rollout from governance infrastructure to org-wide adoption, with a maturity phase at months 4-6.</p>
+
+      <div class="flow-strip">
+        <div class="flow-step" style="background: var(--sds-bg-subtle);">
+          <div class="step-num">Phase 0</div>
+          <div class="step-name">Governance Infrastructure</div>
+          <div class="step-time">Weeks 1-2</div>
+        </div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step">
+          <div class="step-num">Phase 1</div>
+          <div class="step-name">Foundation + Starter Kit</div>
+          <div class="step-time">Weeks 2-4</div>
+        </div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step">
+          <div class="step-num">Phase 2</div>
+          <div class="step-name">Pilot</div>
+          <div class="step-time">Weeks 4-8</div>
+        </div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step">
+          <div class="step-num">Phase 3</div>
+          <div class="step-name">Expand</div>
+          <div class="step-time">Weeks 8-12</div>
+        </div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step" style="background: var(--sds-status-info-bg);">
+          <div class="step-num">Phase 4</div>
+          <div class="step-name">Scale + Measure</div>
+          <div class="step-time">Weeks 12-16</div>
+        </div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step" style="background: var(--sds-status-success-bg);">
+          <div class="step-num">Phase 5</div>
+          <div class="step-name">Mature</div>
+          <div class="step-time">Months 4-6</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Phase 0: Governance Infrastructure (Weeks 1-2)</h3>
+        <ul>
+          <li>Assign central team ownership (Foundation skill author, governance lead)</li>
+          <li>Create central skills repository (git)</li>
+          <li>Create Approved Skill Registry (spreadsheet)</li>
+          <li>Configure Enterprise plan (managed settings, compliance API)</li>
+          <li>Interview 3-4 PMs and engineering leads for cross-functional temperature check</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Phase 1: Foundation + Starter Kit (Weeks 2-4)</h3>
+        <ul>
+          <li>Author Foundation skill (co-authored with engineering)</li>
+          <li>Author CLAUDE.md template and starter kit skills</li>
+          <li>Build test suite (10-15 scenarios)</li>
+          <li>Build first-week onboarding module</li>
+          <li>Update designer evaluation rubrics</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Phase 2: Pilot (Weeks 4-8)</h3>
+        <ul>
+          <li>Recruit one scrappy LOB team (Explore Mode) and one enterprise LOB team (Ship Mode)</li>
+          <li>Include one PM per pilot team</li>
+          <li>Teams begin Phase 1 of practice transition</li>
+          <li>PM tests <code>read-filter-prd</code> on a real PRD &mdash; debrief on usefulness</li>
+          <li>Collect weekly feedback; iterate Foundation skill (expect 2-3 versions)</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Phase 3: Expand (Weeks 8-12)</h3>
+        <ul>
+          <li>Roll out starter kit to all willing teams</li>
+          <li>Scrappy LOBs begin code-first for new features</li>
+          <li>Enterprise LOBs begin Ship Mode pipeline</li>
+          <li>Engineering teams adopt shared CLAUDE.md and Foundation skill</li>
+          <li>Set up CI/CD hooks; build <code>validate-acceptance-criteria</code> skill</li>
+        </ul>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Phase 4: Scale + Measure (Weeks 12-16)</h3>
+          <ul>
+            <li>All teams have starter kit installed</li>
+            <li>Enterprise/scrappy configuration guides published</li>
+            <li>Quarterly review cadence established</li>
+            <li>Metrics tracking begins</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Phase 5: Mature (Months 4-6)</h3>
+          <ul>
+            <li>6-month workforce assessment</li>
+            <li>Cross-LOB consistency review</li>
+            <li>Foundation skill major version</li>
+            <li>Evaluate advanced capabilities</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Key Metrics</h3>
+
+      <div class="grid-3">
+        <div class="card metric-card">
+          <span class="material-symbols-outlined">trending_up</span>
+          <h3>Practice Adoption</h3>
+          <p>% new features starting in Claude Code</p>
+        </div>
+        <div class="card metric-card">
+          <span class="material-symbols-outlined">timer</span>
+          <h3>Handoff Time</h3>
+          <p>Design-ready to engineering-started</p>
+        </div>
+        <div class="card metric-card">
+          <span class="material-symbols-outlined">check_circle</span>
+          <h3>First-Pass Rate</h3>
+          <p>Automated check pass rate</p>
+        </div>
+        <div class="card metric-card">
+          <span class="material-symbols-outlined">sync_problem</span>
+          <h3>Rework Rate</h3>
+          <p>Intent-to-implementation drift</p>
+        </div>
+        <div class="card metric-card">
+          <span class="material-symbols-outlined">extension</span>
+          <h3>Skill Usage</h3>
+          <p>Usage frequency and staleness</p>
+        </div>
+        <div class="card metric-card">
+          <span class="material-symbols-outlined">visibility_off</span>
+          <h3>Shadow AI</h3>
+          <p>Ungoverned usage incidents</p>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ====== STAKEHOLDER PITCHES ====== -->
+    <section id="pitches" class="section">
+      <h2>Stakeholder Pitches</h2>
+      <p class="section-desc">Ready-to-use messaging for each audience. Tailored to what each stakeholder cares about most.</p>
+
+      <div class="pitch-card">
+        <div class="pitch-card-header">
+          <div class="pitch-avatar" style="background: var(--sds-color-blue-750);">
+            <span class="material-symbols-outlined">stars</span>
+          </div>
+          <div>
+            <h4>VP / CDO</h4>
+            <span>Strategic value, investment ask, timeline</span>
+          </div>
+        </div>
+        <div class="pitch-card-body">
+          <blockquote>"We're shifting our design practice from Figma-first to code-first &mdash; not because Figma is bad, but because in a regulated industry, a working prototype that can be automatically tested for compliance is a fundamentally stronger artifact than a static mockup. For our PMF teams, this means testing 2-3x more hypotheses per cycle. For our enterprise teams, it means automated compliance checking plus a documented audit trail. The investment is 1.5-2 FTEs, with first value in 4-6 weeks and org-wide adoption in 16 weeks."</blockquote>
+        </div>
+      </div>
+
+      <div class="pitch-card">
+        <div class="pitch-card-header">
+          <div class="pitch-avatar" style="background: var(--sds-color-green-500);">
+            <span class="material-symbols-outlined">inventory</span>
+          </div>
+          <div>
+            <h4>Product Management Partners</h4>
+            <span>Workflow impact, faster feedback, PMF acceleration</span>
+          </div>
+        </div>
+        <div class="pitch-card-body">
+          <blockquote>"We're changing two things that directly affect your workflow. First, when you share a PRD with design, we'll use a tool that extracts UI/UX requirements into a structured brief that we review together. Gaps surface in minutes instead of days. Second, instead of reviewing static Figma mockups, you'll interact with working prototypes. Feedback becomes 'I tried this and it didn't work' instead of 'I think this might be confusing.' For PMF teams, hypothesis to testable prototype in 1-2 days instead of 1-2 weeks."</blockquote>
+        </div>
+      </div>
+
+      <div class="pitch-card">
+        <div class="pitch-card-header">
+          <div class="pitch-avatar" style="background: var(--sds-color-purple-550);">
+            <span class="material-symbols-outlined">terminal</span>
+          </div>
+          <div>
+            <h4>Engineering Partners</h4>
+            <span>What changes in what they receive from design</span>
+          </div>
+        </div>
+        <div class="pitch-card-body">
+          <blockquote>"Instead of a Figma link with redlines that you interpret into code, you'll receive a working prototype in a feature branch &mdash; built with your actual component library and design tokens, automatically validated for accessibility and compliance. Your job shifts from 'translate this picture into code' to 'refine this working implementation for production.' We've co-authored the foundation standards so the prototype follows your patterns."</blockquote>
+        </div>
+      </div>
+
+      <div class="pitch-card">
+        <div class="pitch-card-header">
+          <div class="pitch-avatar" style="background: var(--sds-color-warm-gray-800);">
+            <span class="material-symbols-outlined">gavel</span>
+          </div>
+          <div>
+            <h4>Compliance Partners</h4>
+            <span>Governance, audit trail, accountability</span>
+          </div>
+        </div>
+        <div class="pitch-card-body">
+          <blockquote>"Every AI-generated design artifact passes through a documented transition gate before it can ship. Automated accessibility validation, automated token-compliance checking, and a structured design review with human sign-off &mdash; all captured in PR history. We maintain a versioned registry of instruction sets with named owners and quarterly reviews. Claude accelerates our designers' work. It does not replace their judgment or accountability."</blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div style="border-top: 1px solid var(--sds-border-default); padding-top: var(--sds-space-600); margin-top: var(--sds-space-400); text-align: center;">
+      <p style="font-size: var(--sds-type-caption); color: var(--sds-text-tertiary);">
+        The Definitive Strategy &mdash; Review quarterly against platform evolution, practice maturity, and organizational needs. &mdash; April 2026
+      </p>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  const main = document.getElementById('main-content');
+  const bar = document.getElementById('progress-bar');
+  const navItems = document.querySelectorAll('.sds-sidenav-item');
+  const sectionEls = [];
+
+  // Collect section IDs from nav items
+  navItems.forEach(item => {
+    const onclick = item.getAttribute('onclick');
+    if (onclick) {
+      const match = onclick.match(/scrollToSection\(event,\s*'([^']+)'\)/);
+      if (match) {
+        const el = document.getElementById(match[1]);
+        if (el) sectionEls.push({ id: match[1], el, nav: item });
       }
-    });
-
-    // Scroll progress + active nav tracking
-    mainContent.addEventListener('scroll', () => {
-      const scrollTop = mainContent.scrollTop;
-      const scrollHeight = mainContent.scrollHeight - mainContent.clientHeight;
-      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
-      scrollProgress.style.width = progress + '%';
-
-      // Find the current section
-      let current = sections[0];
-      for (const s of sections) {
-        const rect = s.el.getBoundingClientRect();
-        const mainRect = mainContent.getBoundingClientRect();
-        if (rect.top <= mainRect.top + 80) {
-          current = s;
-        }
-      }
-
-      navItems.forEach(item => item.classList.remove('active'));
-      if (current) current.nav.classList.add('active');
-    });
-
-    function scrollToSection(e, id) {
-      e.preventDefault();
-      const el = document.getElementById(id);
-      if (!el) return;
-      const offset = el.offsetTop - mainContent.offsetTop - 32;
-      mainContent.scrollTo({ top: offset, behavior: 'smooth' });
     }
-  </script>
+  });
+
+  // Scroll progress + active nav tracking
+  main.addEventListener('scroll', () => {
+    const scrollTop = main.scrollTop;
+    const scrollHeight = main.scrollHeight - main.clientHeight;
+    const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    bar.style.width = progress + '%';
+
+    // Find current section
+    let current = sectionEls[0];
+    for (const s of sectionEls) {
+      const rect = s.el.getBoundingClientRect();
+      const mainRect = main.getBoundingClientRect();
+      if (rect.top <= mainRect.top + 80) {
+        current = s;
+      }
+    }
+
+    navItems.forEach(item => item.classList.remove('active'));
+    if (current) current.nav.classList.add('active');
+  });
+
+  function scrollToSection(e, id) {
+    e.preventDefault();
+    const el = document.getElementById(id);
+    if (!el) return;
+    const offset = el.offsetTop - main.offsetTop - 32;
+    main.scrollTo({ top: offset, behavior: 'smooth' });
+  }
+</script>
 </body>
 </html>
